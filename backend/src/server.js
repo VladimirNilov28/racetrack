@@ -1,24 +1,21 @@
-import express from "express"
+import express from "express";
+import { createServer } from "node:http";
+import { env } from "node:process";
+import { Server } from "socket.io";
 
-import http from "http"
-import { connect } from "http2"
-import connectDB from "./database"
+const PORT = env.PORT || 8080;
+const HOST = env.HOST || "localhost";
 
-const hostname = "localhost"
-const port = 8080
+const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+    connectionStateRecovery: {}
+});
 
-const startServer = async () => {
-    try {
-        await connectDB();
-        const app = express();
-        const server = http.createServer(app);
-        
+app.get("/", (req, res) => {
+    res.end("OK: Server is running");
+});
 
-    } catch(error) {
-        console.log(`Server start failure:`)
-    }
-
-}
-
-
-
+server.listen(PORT, HOST, () => {
+    console.log(`Server is running at: ${HOST}:${PORT}`);
+});
