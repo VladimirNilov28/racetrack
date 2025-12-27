@@ -38,33 +38,19 @@ app.get("/", (req, res) => {
     `);
 });
 
-app.get("/front-desk", (req, res) => {
-    res.sendFile(path.join(`${PUBLIC}/front-desk.html`));
-});
+const pages = {
+  "/front-desk": "front-desk.html",
+  "/lap-line-tracker": "lap-line-tracker.html",
+  "/leader-board": "leader-board.html",
+  "/next-race": "next-race.html",
+  "/race-control": "race-control.html",
+  "/race-countdown": "race-countdown.html",
+  "/race-flags": "race-flags.html",
+};
 
-app.get("/lap-line-tracker", (req, res) => {
-    res.sendFile(path.join(`${PUBLIC}/lap-line-tracker.html`));
-});
-
-app.get("/leader-board", (req, res) => {
-    res.sendFile(path.join(`${PUBLIC}/leader-board.html`));
-});
-
-app.get("/next-race", (req, res) => {
-    res.sendFile(path.join(`${PUBLIC}/next-race.html`));
-});
-
-app.get("/race-control", (req, res) => {
-    res.sendFile(path.join(`${PUBLIC}/race-control.html`));
-});
-
-app.get("/race-countdown", (req, res) => {
-    res.sendFile(path.join(`${PUBLIC}/race-countdown.html`));
-});
-
-app.get("/race-flags", (req, res) => {
-    res.sendFile(path.join(`${PUBLIC}/race-flags.html`));
-});
+for (const [route, file] of Object.entries(pages)) {
+  app.get(route, (req, res) => res.sendFile(path.join(PUBLIC, file)));
+}
 
 server.listen(PORT, HOST, () => {
     console.log(`Server is running at: ${HOST}:${PORT}`);
