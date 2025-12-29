@@ -4,7 +4,7 @@ import path from "node:path";
 import { env } from "node:process";
 import { fileURLToPath } from "node:url";
 import { Server } from "socket.io";
-import { RECEPTIONIST_KEY, SAFETY_KEY, OBSERVER_KEY } from "./security/key-auth.js";
+import { RECEPTIONIST_KEY, SAFETY_KEY, OBSERVER_KEY, keyCheck } from "./security/key-auth.js";
 
 const args = process.argv.slice(2);
 const info = `
@@ -15,19 +15,21 @@ const info = `
             --help                              Show help
         
         Configure:
-            export RECEPTIONIST_KEY=<your key>  Define acess key for /front-desk
-            export SAFETY_KEY=<your key>        Define acess key for /race-control
-            export OBSERVER_KEY=<your key>      Define acess key for /lap-line-tracker
+            export RECEPTIONIST_KEY=<your key>  Define acсess key for /front-desk
+            export SAFETY_KEY=<your key>        Define acсess key for /race-control
+            export OBSERVER_KEY=<your key>      Define acсess key for /lap-line-tracker
         `;
-if (args.includes("--help")) {
-    console.log(info)
+if (args.includes("--help") || args.includes("-h")) {
+    console.log(info);
+    process.exit(0);
 }
+
+keyCheck();
 
 const PORT = env.PORT || 8080;
 const HOST = env.HOST || "localhost";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PUBLIC = path.join(__dirname,"../../frontend/public");
 
 const app = express();
 const server = createServer(app);
@@ -35,11 +37,13 @@ const io = new Server(server, {
     connectionStateRecovery: {}
 });
 
-app.use(
-    express.static(
-        path.join(__dirname, PUBLIC)
-    )
-);
+const PUBLIC = path.join(__dirname, "../../frontend/public");
+const JS = path.join(__dirname, "../../frontend/js");
+const CSS = path.join(__dirname, "../../frontend/css");
+
+app.use(express.static(PUBLIC));      // html
+app.use("/js", express.static(JS));   // js
+app.use("/css", express.static(CSS)); 
 
 
 app.get("/", (req, res) => {
@@ -71,14 +75,14 @@ for (const [route, file] of Object.entries(pages)) {
   app.get(route, (req, res) => res.sendFile(path.join(PUBLIC, file)));
 }
 
-server.listen(PORT, HOST, () => {
-    console.log(`Server is running at: ${HOST}:${PORT}`);
-});
-
 io.on("connection", (socket) => {
     console.log(`${socket.id} connected: ${socket.handshake.auth?.role}`);
     socket.on("ping", (pong) => console.log(pong));
     socket.on("disconnect", (reason) => console.log(`User disconnected: ${socket.id} reason: ${reason}`));
-
-    
 });
+
+
+server.listen(PORT, HOST, () => {
+    console.log(`Server is running at: ${HOST}:${PORT}`);
+});
+

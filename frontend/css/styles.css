@@ -1,0 +1,38 @@
+.login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.login-box {
+    background: #111;
+    padding: 24px;
+    border-radius: 8px;
+    width: 280px;
+    text-align: center;
+    color: white;
+    font-family: sans-serif;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 12px 0;
+    font-size: 16px;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.error {
+    color: #ff4d4d;
+    min-height: 1em;
+}
