@@ -4,7 +4,7 @@ import path from "node:path";
 import { env } from "node:process";
 import { fileURLToPath } from "node:url";
 import { Server } from "socket.io";
-import { RECEPTIONIST_KEY, SAFETY_KEY, OBSERVER_KEY, keyCheck } from "./security/key-auth.js";
+import { RECEPTIONIST_KEY, SAFETY_KEY, OBSERVER_KEY, keyCheck } from "./security/global-key-control.js";
 
 const args = process.argv.slice(2);
 const info = `
@@ -75,10 +75,50 @@ for (const [route, file] of Object.entries(pages)) {
   app.get(route, (req, res) => res.sendFile(path.join(PUBLIC, file)));
 }
 
+// KEY VERIFICATION
+io.use((socket, next) => {
+    const user_key = socket.handshake.auth.key;
+    const role = socket.handshake.auth.role;
+    switch (role) {
+        case "front-desk":
+            if (user_key === RECEPTIONIST_KEY) {
+                console.log(`${role}: correct access key`)
+                next();
+            } else {
+                setTimeout(() => {
+                    next(new Error(`${role}: invalid access key`));
+                }, 500)
+            }
+            break;
+        case "race-control":
+            if (user_key === SAFETY_KEY) {
+                console.log(`${role}: correct access key`)
+                next();
+            } else {
+                setTimeout(() => {
+                    next(new Error(`${role}: invalid access key`));
+                }, 500)
+            }
+            break;
+        case "lap-line-tracker":
+            if (user_key === OBSERVER_KEY) {
+                console.log(`${role}:correct access key`)
+                next();
+            } else {
+                setTimeout(() => {
+                    next(new Error(`${role}: invalid access key`));
+                }, 500)
+            }
+            break;
+        default:
+            next();
+    }
+})
+
 io.on("connection", (socket) => {
-    console.log(`${socket.id} connected: ${socket.handshake.auth?.role}`);
+    console.log(`${socket.id} connected: ${ socket.handshake.auth?.role }`);
     socket.on("ping", (pong) => console.log(pong));
-    socket.on("disconnect", (reason) => console.log(`User disconnected: ${socket.id} reason: ${reason}`));
+    socket.on("disconnect", (reason) => console.log(`${socket.id} disconnected, reason: ${reason}`));
 });
 
 
