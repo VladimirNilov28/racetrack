@@ -8,9 +8,9 @@ import {env} from "node:process";
  * 
  */
 
-const RECEPTIONIST_KEY = env.RECEPTIONIST_KEY || "receptionist";
-const SAFETY_KEY = env.SAFETY_KEY || "safety";
-const OBSERVER_KEY = env.OBSERVER_KEY || "observer";
+const RECEPTIONIST_KEY = env.RECEPTIONIST_KEY || "admin";
+const SAFETY_KEY = env.SAFETY_KEY || "admin";
+const OBSERVER_KEY = env.OBSERVER_KEY || "admin";
 
 const info = `\x1b[31m
         Configure:
