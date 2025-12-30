@@ -27,7 +27,11 @@ export function showAccessForm({ title = "Access Key Required", onSubmit }) {
   error.setAttribute("role", "alert");
   error.setAttribute("aria-live", "polite");
 
+  let submitting = false;
+
   const handleSubmit = () => {
+    if (submitting) return;
+
     const key = input.value.trim();
 
     if (!key) {
@@ -36,19 +40,24 @@ export function showAccessForm({ title = "Access Key Required", onSubmit }) {
       return;
     }
 
+    submitting = true;
     error.textContent = "";
     button.disabled = true;
+
     onSubmit(key);
   };
 
   button.addEventListener("click", handleSubmit);
-  input.addEventListener("keypress", (e) => {
+
+  input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") handleSubmit();
   });
 
-  // Close on overlay click
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) return; // prevent closing when clicking box
+  // Clear error when user types again
+  input.addEventListener("input", () => {
+    if (error.textContent) {
+      error.textContent = "";
+    }
   });
 
   box.append(h2, input, button, error);
@@ -62,8 +71,16 @@ export function showAccessForm({ title = "Access Key Required", onSubmit }) {
       overlay.remove();
     },
     showError(message) {
+      submitting = false;
       error.textContent = message;
       button.disabled = false;
+      input.focus();
+    },
+    reset() {
+      submitting = false;
+      error.textContent = "";
+      button.disabled = false;
+      input.value = "";
       input.focus();
     }
   };

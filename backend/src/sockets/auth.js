@@ -1,45 +1,30 @@
 import { RECEPTIONIST_KEY, SAFETY_KEY, OBSERVER_KEY } from "../security/global-key-control.js";
 
+function isKeyValid(role, key) {
+    switch (role) {
+        case "front-desk":
+            return key === RECEPTIONIST_KEY;
+        case "race-control":
+            return key === SAFETY_KEY;
+        case "lap-line-tracker":
+            return key === OBSERVER_KEY;
+        default:
+            return true;
+    }
+}
+
 export function keyAuthentication(io) {
     io.use((socket, next) => {
-        const user_key = socket.handshake.auth.key;
-        const role = socket.handshake.auth.role;
-        switch (role) {
-            case "front-desk":
-                if (user_key === RECEPTIONIST_KEY) {
-                    console.log(`\x1b[32m${role}: correct access key\x1b[0m`);
-                    next();
-                } else {
-                    setTimeout(() => {
-                        console.log(`\x1b[31m${role}: invalid access key\x1b[0m`);
-                        next(new Error(`${role}: invalid access key`));
-                    }, 500)
-                }
-                break;
-            case "race-control":
-                if (user_key === SAFETY_KEY) {
-                    console.log(`\x1b[32m${role}: correct access key\x1b[0m`);
-                    next();
-                } else {
-                    setTimeout(() => {
-                        console.log(`\x1b[31m${role}: invalid access key\x1b[0m`);
-                        next(new Error(`${role}: invalid access key`));
-                    }, 500)
-                }
-                break;
-            case "lap-line-tracker":
-                if (user_key === OBSERVER_KEY) {
-                    console.log(`\x1b[32m${role}: correct access key\x1b[0m`);
-                    next();
-                } else {
-                    setTimeout(() => {
-                        console.log(`\x1b[31m${role}: invalid access key\x1b[0m`);
-                        next(new Error(`${role}: invalid access key`));
-                    }, 500)
-                }
-                break;
-            default:
-                next();
+        const role = socket.handshake.auth?.role;
+        const key = socket.handshake.auth?.key;
+
+        const ok = isKeyValid(role, key);
+        if (!ok) {
+            const err = new Error("INVALID_ACCESS_KEY");
+            err.data = { code: "INVALID_ACCESS_KEY", role };
+            return next(err);
         }
-    })
+
+        next();
+    });
 }
