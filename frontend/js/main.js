@@ -57,7 +57,7 @@ if (employeeRoles.has(role)) {
         }
     });
 } else {
-    socket.auth = { key: null , role: "public" };
+    socket.auth = { key: null , role };
     socket.connect();
 }
 
