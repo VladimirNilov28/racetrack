@@ -11,7 +11,7 @@ function isKeyValid(role, key) {
         default:
             return true;
     }
-}
+}пшепше
 
 export function keyAuthentication(io) {
     io.use((socket, next) => {

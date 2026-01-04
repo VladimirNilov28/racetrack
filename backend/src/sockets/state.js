@@ -1,31 +1,45 @@
 /**
+ * state.js
  * Single in-memory source of truth for the whole server.
  */
 
 export const state = {
-
-    /**
-     * It records when state changed last time
-     */
     meta: {
         version: 1,
-        updateAt: null,
+        updatedAt: null,
     },
 
-    /**
-     * Heard of system
-     *   - upcoming: Collect array of upcoming races
-     *   - current: Current race
-     *   - lastResult: Collect last closest race
-     */
     sessions: {
+        // list of sessions that will happen next
         upcoming: [],
+
+        // current active session (or null if nothing is running)
         current: null,
+
+        // last finished session results (shown on leaderboard until next start)
         lastResult: null,
     },
 
     race: {
-        mode: { value: "safe"}
-    }
+        // race mode chosen by Safety Official (safe/race/hazard...)
+        mode: {
+            value: "safe",
+            updatedAt: null,
+        },
 
-}
+        // current flag shown on race-flags screen (green/yellow/red/checkered...)
+        flag: {
+            value: "green",  
+            updatedAt: null,
+        },
+    },
+
+    timer: {
+        // timer state for countdown/leaderboard
+        status: "idle",      // idle | running | ended
+        startedAt: null,     // timestamp
+        endsAt: null,        // timestamp
+        durationSec: null,   // planned duration
+        remainingSec: null,  // optional placeholder for later
+    },
+};
