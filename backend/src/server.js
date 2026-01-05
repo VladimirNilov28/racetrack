@@ -53,4 +53,4 @@ socketConnect(io);
 
 
 server.listen(PORT, HOST);
-logger.info(`Server is running at: http://${HOST}:${PORT}/`)
+logger.info("server:start", { host: HOST, port: PORT, nodeEnv: process.env.NODE_ENV });
