@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "socketio-wildcard": "^2.0.0"
+  }
+}

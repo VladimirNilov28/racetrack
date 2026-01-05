@@ -5,10 +5,12 @@ import { Server } from "socket.io";
 import { keyCheck } from "./security/global-key-control.js";
 import { registerPages } from "./routes/pages.js";
 import { keyAuthentication } from "./sockets/auth.js";
-import { pingPong } from "./sockets/handlers.js";
+import { socketConnect } from "./sockets/handlers.js";
 import { parseCli, printHelp } from "./config/cli.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import logger from "./logger.js";
+import wildcard from "socketio-wildcard";
 
 // CLI
 const cli = parseCli(process.argv);
@@ -39,15 +41,16 @@ app.use(express.static(PUBLIC));
 app.use("/js", express.static(JS));
 app.use("/css", express.static(CSS));
 
+// Socket.io patch via socketio-wildcard
+io.use(wildcard());
+
 // HTML
 registerPages(app);
 
 // Sockets
 keyAuthentication(io);
-pingPong(io);
+socketConnect(io);
 
 
-server.listen(PORT, HOST, () => {
-    console.log(`Server is running at: ${HOST}:${PORT}`);
-});
-
+server.listen(PORT, HOST);
+logger.info(`Server is running at: http://${HOST}:${PORT}/`)
