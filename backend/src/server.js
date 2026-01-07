@@ -11,6 +11,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import logger from "./logger.js";
 import wildcard from "socketio-wildcard";
+import { createInitialState } from "./service/state-init.js";
 
 // CLI
 const cli = parseCli(process.argv);
@@ -24,6 +25,10 @@ if (!cli.noKeycheck) keyCheck();
 
 const PORT = env.PORT || 8080;
 const HOST = env.HOST || "localhost";
+
+// Single in-memory source of truth for the whole server.
+let state = createInitialState();
+logger.info("state:init")
 
 const app = express();
 const server = createServer(app);
@@ -44,7 +49,7 @@ app.use("/css", express.static(CSS));
 // Socket.io patch via socketio-wildcard
 io.use(wildcard());
 
-// HTML
+// UI
 registerPages(app);
 
 // Sockets
