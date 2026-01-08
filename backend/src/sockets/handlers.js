@@ -1,7 +1,61 @@
-export function pingPong(io) {
-    io.on("connection", (socket) => {
-        console.log(`\x1b[33m${socket.id}\x1b[0m connected to ${ socket.handshake.auth?.role }`);
-        socket.on("ping", (pong) => console.log(pong));
-        socket.on("disconnect", (reason) => console.log(`\x1b[33m${socket.id}\x1b[0m disconnected from ${ socket.handshake.auth?.role }, reason: ${reason}\n`));
+import logger from "../logger.js";
+
+export function socketConnect(io) {
+  io.on("connection", (socket) => {
+    const role = socket.handshake.auth?.role ?? "unknown";
+
+    logger.info("socket:connect", {
+      socketId: socket.id,
+      role,
     });
+
+    // Log all incoming socket events (requires io.use(wildcard()) in server.js)
+    socket.on("*", (packet) => {
+      const [eventName, eventData] = packet.data ?? [];
+
+      // avoid noisy logs
+      if (!eventName || eventName === "ping" || eventName === "pong") return;
+
+      logger.info("event:in", {
+        socketId: socket.id,
+        role,
+        eventName,
+        eventData,
+      });
+    });
+
+    // Patch emit to log outgoing events
+    const _emit = socket.emit.bind(socket);
+
+    socket.emit = function (eventName, eventData, ...rest) {
+      // avoid noisy logs
+      if (eventName !== "pong") {
+        logger.info("event:out", {
+          socketId: socket.id,
+          role,
+          eventName,
+          eventData,
+        });
+      }
+      return _emit(eventName, eventData, ...rest);
+    };
+
+    // Ping -> Pong (testing)
+    socket.on("ping", (payload) => {
+      logger.debug("ping:in", {
+        socketId: socket.id,
+        role,
+        payload,
+      });
+      socket.emit("pong", payload);
+    });
+
+    socket.on("disconnect", (reason) => {
+      logger.info("socket:disconnect", {
+        socketId: socket.id,
+        role,
+        reason,
+      });
+    });
+  });
 }

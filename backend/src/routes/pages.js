@@ -1,10 +1,11 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import logger from "../logger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// путь до frontend/public
+// path to frontend/public
 const PUBLIC = path.join(__dirname, "../../../frontend/public");
 
 const pages = {
@@ -20,6 +21,11 @@ const pages = {
 export function registerPages(app) {
   // index
   app.get("/", (req, res) => {
+    logger.info("http:page:serve", {
+      route: "/",
+      ip: req.ip,
+    });
+
     res.send(`
       <h1>Racetrack Interfaces</h1>
       <ul>
@@ -34,10 +40,20 @@ export function registerPages(app) {
     `);
   });
 
-  // остальные страницы
+  // other pages
   for (const [route, file] of Object.entries(pages)) {
     app.get(route, (req, res) => {
+      logger.info("http:page:serve", {
+        route,
+        file,
+        ip: req.ip,
+      });
+
       res.sendFile(path.join(PUBLIC, file));
     });
   }
+
+  logger.info("http:pages:registered", {
+    count: Object.keys(pages).length + 1, // + index
+  });
 }

@@ -29,7 +29,7 @@
  */
 
 import socket from "./socket.js";
-import { showAccessForm } from "./access-from.js";
+import { showAccessForm } from "./access-form.js";
 
 const role = location.pathname.slice(1);
 
@@ -67,4 +67,7 @@ if (pingBtn) {
     pingBtn.addEventListener("click", () => {
         socket.emit("ping", "pong");
     });
+    socket.on("pong", () => {
+        console.log("pong")
+    })
 }
