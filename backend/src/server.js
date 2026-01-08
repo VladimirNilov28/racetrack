@@ -5,10 +5,13 @@ import { Server } from "socket.io";
 import { keyCheck } from "./security/global-key-control.js";
 import { registerPages } from "./routes/pages.js";
 import { keyAuthentication } from "./sockets/auth.js";
-import { pingPong } from "./sockets/handlers.js";
+import { socketConnect } from "./sockets/handlers.js";
 import { parseCli, printHelp } from "./config/cli.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import logger from "./logger.js";
+import wildcard from "socketio-wildcard";
+import { createInitialState } from "./service/state-init.js";
 
 // CLI
 const cli = parseCli(process.argv);
@@ -22,6 +25,10 @@ if (!cli.noKeycheck) keyCheck();
 
 const PORT = env.PORT || 8080;
 const HOST = env.HOST || "localhost";
+
+// Single in-memory source of truth for the whole server.
+let state = createInitialState();
+logger.info("state:init")
 
 const app = express();
 const server = createServer(app);
@@ -39,15 +46,16 @@ app.use(express.static(PUBLIC));
 app.use("/js", express.static(JS));
 app.use("/css", express.static(CSS));
 
-// HTML
+// Socket.io patch via socketio-wildcard
+io.use(wildcard());
+
+// UI
 registerPages(app);
 
 // Sockets
 keyAuthentication(io);
-pingPong(io);
+socketConnect(io);
 
 
-server.listen(PORT, HOST, () => {
-    console.log(`Server is running at: ${HOST}:${PORT}`);
-});
-
+server.listen(PORT, HOST);
+logger.info("server:start", { host: HOST, port: PORT, nodeEnv: process.env.NODE_ENV });
