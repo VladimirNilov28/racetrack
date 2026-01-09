@@ -1,4 +1,8 @@
 import logger from "../logger.js";
+import { EVENTS } from "./sockets/events.js"
+import { startRace } from "./service/race/start.js";
+
+const {CMD, EVT} = EVENTS;
 
 export function socketConnect(io) {
   io.on("connection", (socket) => {
@@ -49,6 +53,10 @@ export function socketConnect(io) {
       });
       socket.emit("pong", payload);
     });
+
+    // socket.on(CMD.RACE_START, () => {
+    //   startRace()
+    // });
 
     socket.on("disconnect", (reason) => {
       logger.info("socket:disconnect", {

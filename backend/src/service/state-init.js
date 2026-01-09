@@ -22,12 +22,6 @@ export function createInitialState() {
                 value: "safe",
                 updatedAt: null,
             },
-
-            // current flag shown on race-flags screen (green/yellow/red/checkered...)
-            flag: {
-                value: "green",  
-                updatedAt: null,
-            },
         },
 
         timer: {
@@ -36,7 +30,6 @@ export function createInitialState() {
             startedAt: null,     // timestamp
             endsAt: null,        // timestamp
             durationSec: null,   // planned duration
-            remainingSec: null,  // optional placeholder for later
         },
     };
 }
