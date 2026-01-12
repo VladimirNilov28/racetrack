@@ -10,6 +10,10 @@ export function startRace(state) {
 
     return {
         ...state,
+        meta: {
+            ...state.meta,
+            updatedAt: now,
+        },
         sessions: {
             ...state.sessions,
             current: upcoming[0],

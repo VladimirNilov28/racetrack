@@ -53,7 +53,7 @@ export function createInitialState() {
             mode: {
                 // "safe" | "hazard" | "danger" | "finish"
                 value: "safe",
-
+                
                 // timestamp when race mode was last changed
                 updatedAt: null,
             },

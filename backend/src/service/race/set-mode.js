@@ -9,6 +9,10 @@ export function setRaceMode(state, mode) {
 
     return {
         ...state,
+        meta: {
+            ...state.meta,
+            updatedAt: now,
+        },
         race: {
             ...state.race,
             mode: {
