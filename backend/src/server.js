@@ -16,8 +16,8 @@ import { createInitialState } from "./service/state-init.js";
 // CLI
 const cli = parseCli(process.argv);
 if (cli.help) {
-  printHelp();
-  process.exit(0);
+    printHelp();
+    process.exit(0);
 }
 
 // 2) env / security
@@ -27,7 +27,8 @@ const PORT = env.PORT || 8080;
 const HOST = env.HOST || "localhost";
 
 // Single in-memory source of truth for the whole server.
-let state = createInitialState();
+const state = createInitialState();
+
 logger.info("state:init")
 
 const app = express();
@@ -55,6 +56,8 @@ registerPages(app);
 // Sockets
 keyAuthentication(io);
 socketConnect(io);
+
+
 
 
 server.listen(PORT, HOST);
