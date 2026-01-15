@@ -2,8 +2,20 @@ export function recordLap(state, car) {
     const now = Date.now();
     const session = state.sessions.current;
 
-    if (car > session.drivers.length) throw new Error(`${car} is not exist in current session`);
-    if (state.timer.status === "idle") throw new Error(`Session is not started`);
+    if (session === null) {
+        throw new Error("No active session");
+    }
+
+    // Check driver existence by car number (domain rule)
+    const driverExists = session.drivers.some(d => d.car === car);
+    if (!driverExists) {
+        throw new Error(`Car ${car} does not exist in current session`);
+    }
+
+    if (state.timer.status === "idle") {
+        throw new Error("Session is not started");
+    }
+
     const updatedDrivers = session.drivers.map((driver) => {
         if (driver.car !== car) return driver;
 
@@ -16,15 +28,11 @@ export function recordLap(state, car) {
 
         // We calculate the next fastest lap time
         const nextFastestLap =
-            // If lapTime is null (first lap), fastest lap stays the same
             lapTime === null
                 ? driver.fastestLap
-                // If this is the first recorded lap, it becomes the fastest lap
                 : driver.fastestLap === null
                     ? lapTime
-                    // Otherwise, we compare and keep the fastest lap
                     : Math.min(driver.fastestLap, lapTime);
-
 
         return {
             ...driver,
