@@ -10,6 +10,14 @@ export function endSession(state) {
             ...state.meta,
             updatedAt: now,
         },
+        race: {
+            ...state.race,
+            mode:{
+                ...state.race.mode,
+                value: "safe",
+                updatedAt: now,
+            }
+        },
         sessions: {
             ...state.sessions,
             lastResult: state.sessions.current,

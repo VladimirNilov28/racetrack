@@ -1,4 +1,4 @@
-export function startRace(state) {
+export function startRace(state, duration = 60) {
 
     const { upcoming } = state.sessions;
     
@@ -23,8 +23,8 @@ export function startRace(state) {
             ...state.timer,
             status: "running",
             startedAt: now,
-            endsAt: now + 60 * 1000,
-            durationSec: 60,
+            endsAt: now + duration * 1000,
+            durationSec: duration,
         }
     };
 }
