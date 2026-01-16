@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { createInitialState } from "../state-init.js";
 import { raceTick } from "./race-tick.js";
+import { finishRace } from "../race/finish.js";
 
 describe("orchestration/race-tick", () => {
   beforeEach(() => {
@@ -12,14 +13,15 @@ describe("orchestration/race-tick", () => {
     vi.useRealTimers();
   });
 
-  it("returns the same state if timer.status is idle", () => {
+  it("returns the same state (same reference) if timer.status is idle", () => {
     const state = createInitialState();
+
     const result = raceTick(state, Date.now());
 
     expect(result).toBe(state);
   });
 
-  it("returns the same state if timer.status is ended", () => {
+  it("returns the same state (same reference) if timer.status is ended", () => {
     const base = createInitialState();
     const state = {
       ...base,
@@ -36,7 +38,7 @@ describe("orchestration/race-tick", () => {
     expect(result).toBe(state);
   });
 
-  it("returns the same state if timer is running but now < endsAt", () => {
+  it("returns the same state (same reference) if timer is running but now < endsAt", () => {
     const base = createInitialState();
     const now = Date.now();
 
@@ -49,6 +51,7 @@ describe("orchestration/race-tick", () => {
         durationSec: 10,
       },
       race: {
+        ...base.race,
         mode: { value: "safe", updatedAt: now - 1000 },
       },
     };
@@ -58,7 +61,7 @@ describe("orchestration/race-tick", () => {
     expect(result).toBe(state);
   });
 
-  it("finishes the race when timer is running and now >= endsAt", () => {
+  it("when now >= endsAt: returns exactly what finishRace(state) returns", () => {
     const base = createInitialState();
     const now = Date.now();
 
@@ -69,6 +72,7 @@ describe("orchestration/race-tick", () => {
         current: { id: "S1", drivers: [] },
       },
       race: {
+        ...base.race,
         mode: { value: "safe", updatedAt: now - 1000 },
       },
       timer: {
@@ -79,17 +83,17 @@ describe("orchestration/race-tick", () => {
       },
     };
 
+    // Expected behavior: tick delegates to domain brick
+    const expected = finishRace(state);
     const result = raceTick(state, now);
 
-    // should transition to finish
-    expect(result).not.toBe(state);
-    expect(result.race.mode.value).toBe("finish");
+    expect(result).toEqual(expected);
 
-    // timer should no longer be running (finishRace likely sets ended)
-    expect(result.timer.status).toBe("ended");
+    // and it actually changed something
+    expect(result).not.toBe(state);
   });
 
-  it("is immutable when it changes state", () => {
+  it("does not mutate original state when it triggers finishing", () => {
     const base = createInitialState();
     const now = Date.now();
 
@@ -100,6 +104,7 @@ describe("orchestration/race-tick", () => {
         current: { id: "S1", drivers: [] },
       },
       race: {
+        ...base.race,
         mode: { value: "safe", updatedAt: now - 1000 },
       },
       timer: {

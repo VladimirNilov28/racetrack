@@ -12,7 +12,9 @@ export function finishRace(state) {
             updatedAt: now,
         },
         race: {
+            ...state.race,
             mode:{
+                ...state.race.mode,
                 value: "finish",
                 updatedAt: now,
             }

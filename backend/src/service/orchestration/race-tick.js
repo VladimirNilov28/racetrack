@@ -1,18 +1,18 @@
-export function raceTick(state, now) {
-    if (state.timer.status === "idle") return state;
-    else if (state.timer.status === "ended") return state;
-    else if (state.timer.status === "running" && state.timer.endsAt > now) return state;
-    else return {
-        ...state,
-        race: {
-            mode: {
-                value: "finish",
-                updatedAt: now,
-            },
-        },
-        timer: {
-            ...state.timer,
-            status: "ended",
-        },
-    }
+import { finishRace } from "../race/finish.js";
+
+export function raceTick(state, now = Date.now()) {
+    // Only running timer can trigger finishing
+    if (state.timer.status !== "running") return state;
+
+    // Defensive: if endsAt is missing, we can't decide time-based finish
+    if (state.timer.endsAt === null) return state;
+
+    // Not yet time to finish
+    if (now < state.timer.endsAt) return state;
+
+    // Defensive: finishRace requires an active current session
+    if (state.sessions.current === null) return state;
+
+    // Time is up -> delegate to domain brick
+    return finishRace(state);
 }
