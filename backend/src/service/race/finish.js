@@ -7,8 +7,14 @@ export function finishRace(state) {
 
     return {
         ...state,
+        meta: {
+            ...state.meta,
+            updatedAt: now,
+        },
         race: {
+            ...state.race,
             mode:{
+                ...state.race.mode,
                 value: "finish",
                 updatedAt: now,
             }
