@@ -6,6 +6,9 @@ export function recordLap(state, car) {
         throw new Error("No active session");
     }
 
+    
+    if (state.race.mode.value === "finish" && state.timer.status === "ended") throw new Error("Lap can't be recorded. It is alredy finished")
+    if (state.timer.status !== "running") throw new Error("Lap is no active - it can not be recorded")
     // Check driver existence by car number (domain rule)
     const driverExists = session.drivers.some(d => d.car === car);
     if (!driverExists) {

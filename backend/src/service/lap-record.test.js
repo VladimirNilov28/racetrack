@@ -76,15 +76,14 @@ describe("recordLap", () => {
     expect(d1.fastestLap).toBe(12_000);
   });
 
-  it("allows recording laps when race is finished (finish mode) but not ended session", () => {
+  it("doesnt allow recording laps when race is finished (finish mode)", () => {
     const running = makeRunningStateWithCars([1]);
-
     const finished = finishRace(running); // timer.status -> ended, mode -> finish
 
-    const next = recordLap(finished, 1);
+    expect(() => recordLap(finished, 1)).toThrow(/finish|finished|ended/i);
 
-    const d1 = next.sessions.current.drivers.find((d) => d.car === 1);
-    expect(d1.laps).toBe(1);
+    // Optional: ensure state wasn't mutated
+    expect(finished.sessions.current.drivers.find(d => d.car === 1).laps).toBe(0);
   });
 
   it("throws if there is no current session", () => {

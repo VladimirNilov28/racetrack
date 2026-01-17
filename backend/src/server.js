@@ -11,25 +11,20 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import logger from "./logger.js";
 import wildcard from "socketio-wildcard";
-import { createInitialState } from "./service/state-init.js";
+import { startTicker } from "./runtime/ticker.js";
 
 // CLI
 const cli = parseCli(process.argv);
 if (cli.help) {
-    printHelp();
-    process.exit(0);
+  printHelp();
+  process.exit(0);
 }
 
-// 2) env / security
+// env / security
 if (!cli.noKeycheck) keyCheck();
 
 const PORT = env.PORT || 8080;
 const HOST = env.HOST || "localhost";
-
-// Single in-memory source of truth for the whole server.
-const state = createInitialState();
-
-logger.info("state:init")
 
 const app = express();
 const server = createServer(app);
@@ -57,8 +52,12 @@ registerPages(app);
 keyAuthentication(io);
 socketConnect(io);
 
-
-
+// ✅ one ticker for whole app
+startTicker({ intervalMs: 250 });
 
 server.listen(PORT, HOST);
-logger.info("server:start", { host: HOST, port: PORT, nodeEnv: process.env.NODE_ENV });
+logger.info("server:start", {
+  host: HOST,
+  port: PORT,
+  nodeEnv: process.env.NODE_ENV,
+});
