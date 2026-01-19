@@ -5,6 +5,8 @@ export function startRace(state, duration = 60) {
     // Sessions update
     if (upcoming.length === 0) throw new Error("No upcoming sessions");
 
+    if (state.timer.status === "running") throw new Error("Current race is already active and can not be started");
+
     const now = Date.now();
 
 
@@ -25,6 +27,7 @@ export function startRace(state, duration = 60) {
             startedAt: now,
             endsAt: now + duration * 1000,
             durationSec: duration,
-        }
+        },
+        _lastRaceDuration: duration,  // Store for auto-start of next race
     };
 }

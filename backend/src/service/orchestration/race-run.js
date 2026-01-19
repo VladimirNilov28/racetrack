@@ -7,12 +7,17 @@ export function raceRun(state, params) {
     const endedSession = endSession(state);
     const hasNextRace = endedSession.sessions.upcoming.length > 0;
 
-    const start = (state, params) => {
-        if (!params || params.durationSec == null) throw new Error("durationSec is missing");
-        return startRace(state, params.durationSec);
+    if (!hasNextRace) {
+        return endedSession;
     }
 
-    return hasNextRace ? start(endedSession, params) : endedSession;
+    // Use provided durationSec or fall back to previously stored duration
+    const durationSec = params?.durationSec ?? state._lastRaceDuration;
 
+    if (durationSec === undefined || durationSec === null) {
+        throw new Error("durationSec is required to start the next session");
+    }
 
+    // Start the next race
+    return startRace(endedSession, durationSec);
 }
