@@ -1,6 +1,8 @@
 import { createInitialState } from "../service/state-init.js";
 import logger from "../logger.js";
 
+import { env } from "node:process"
+
 import { startRace } from "../service/race/start.js";
 import { finishRace } from "../service/race/finish.js";
 import { setRaceMode } from "../service/race/set-mode.js";
@@ -43,16 +45,22 @@ function publish(next) {
  * - saves state
  * - publishes if reference changed
  */
+const DEFAULT_DURATION_SEC = env.NODE_ENV === "production" ? 600 : 60;
+const RACE_DURATION_SEC = env.RACE_DURATION_SEC
+    ? Number(env.RACE_DURATION_SEC)
+    : DEFAULT_DURATION_SEC;
 export function dispatch(cmd) {
     const prev = state;
     const { type, payload } = cmd ?? {};
 
     let next = state;
 
+    
+
     switch (type) {
         // --- RACE (Safety / Race Control) ---
         case "cmd:race:start":
-            next = startRace(next, payload?.durationSec);
+            next = startRace(next, RACE_DURATION_SEC);
             break;
 
         case "cmd:race:set-mode":
