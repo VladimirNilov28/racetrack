@@ -24,7 +24,7 @@ if (cli.help) {
 if (!cli.noKeycheck) keyCheck();
 
 const PORT = env.PORT || 8080;
-const HOST = env.HOST || "localhost";
+const HOST = env.HOST || "0.0.0.0";
 
 const app = express();
 const server = createServer(app);
@@ -52,7 +52,6 @@ registerPages(app);
 keyAuthentication(io);
 socketConnect(io);
 
-// ✅ one ticker for whole app
 startTicker({ intervalMs: 250 });
 
 server.listen(PORT, HOST);
