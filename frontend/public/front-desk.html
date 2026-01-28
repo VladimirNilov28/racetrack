@@ -1,18 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/styles.css">
-    <title>Front-desk</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/front-desk.css" />
+  <title>Front Desk</title>
 </head>
 <body>
-    <h1>OK: front-desk</h1>
-    
-    <button id="ping-btn">
-        <span>PING</span>
-    </button>
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="../js/main.js"></script>
+  <main class="page fd_theme">
+    <header class="page_header fd_header">
+      <div class="fd_header_left">
+        <h1 class="page_title fd_title">Front Desk</h1>
+        <p class="muted fd_subtitle">Receptionist • Configure upcoming race sessions</p>
+      </div>
+
+      <div class="status fd_status">
+        <span class="muted">Connection:</span>
+        <strong data-fd="conn-status" class="badge badge_offline">Offline</strong>
+        <span class="fd_status_ticks" aria-hidden="true"></span>
+      </div>
+    </header>
+
+    <!-- Some design element -->
+    <section class="fd_stage" aria-label="Front desk panels">
+      <div class="fd_rails" aria-hidden="true"></div>
+
+      <div class="fd_grid">
+        <!-- Card 1: Upcoming Sessions -->
+        <article class="card card_race">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Upcoming Sessions</h2>
+
+          <div class="row">
+            <button type="button" class="btn btn_primary" data-action="fd-add-session">+ Add session</button>
+          </div>
+
+          <ol class="list list_slots" data-fd="session-list" aria-label="Upcoming race sessions">
+            <li class="muted">No sessions yet</li>
+          </ol>
+        </article>
+
+        <!-- Card 2: Session Details -->
+        <article class="card card_race">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Session Details</h2>
+
+          <div class="muted" data-fd="session-meta">Select a session</div>
+
+          <div class="divider"></div>
+
+          <form class="row" data-fd="add-driver-form" autocomplete="off">
+            <label class="sr_only" for="fd_driver_name">Driver name</label>
+            <input
+              id="fd_driver_name"
+              name="driverName"
+              type="text"
+              placeholder="Add driver name…"
+            />
+            <select id="fd_driver_car" name="driverCar" aria-label="Car">
+              <option value="" selected>Car…</option>
+              <option value="1">Car 1</option>
+              <option value="2">Car 2</option>
+              <option value="3">Car 3</option>
+              <option value="4">Car 4</option>
+              <option value="5">Car 5</option>
+              <option value="6">Car 6</option>
+              <option value="7">Car 7</option>
+              <option value="8">Car 8</option>
+            </select>
+
+            <button type="submit" class="btn btn_add">Add</button>
+          </form>
+
+          <div class="muted fd_msg" data-fd="form-msg" role="status" aria-live="polite"></div>
+
+          <ul class="list list_slots" data-fd="driver-list" aria-label="Drivers for selected session">
+            <li class="muted">No session selected</li>
+          </ul>
+        </article>
+
+        <!-- Card 3: Next Race Preview -->
+        <article class="card card_race">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Next Race Preview</h2>
+          <p class="muted">What drivers will see on the Next Race screen</p>
+
+          <ul class="list list_slots" data-fd="next-preview">
+            <li class="muted">No upcoming session</li>
+          </ul>
+        </article>
+
+        <!-- Card 4: System Status -->
+        <article class="card card_race">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">System Status</h2>
+
+          <div class="kv">
+            <div class="muted">Last update</div>
+            <div data-fd="last-update" class="timecode">—</div>
+          </div>
+
+          <div class="row" style="margin-top: 0.9rem;">
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/front-desk.js"></script>
 </body>
 </html>
