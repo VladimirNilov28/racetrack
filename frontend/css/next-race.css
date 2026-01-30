@@ -1,0 +1,206 @@
+:root {
+    --nr-bg: #0a0e14;
+    --nr-text: #e9eef7;
+    --nr-muted: rgba(233, 238, 247, 0.6);
+    --nr-accent: #ff6a00;
+    --nr-car-bg: rgba(255, 106, 0, 0.15);
+    --nr-error: #ff3b3b;
+    --nr-success: #00ff8c;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: var(--nr-bg);
+    color: var(--nr-text);
+    font-family: sans-serif;
+}
+
+.nr-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+/* header styles */
+.nr-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.nr-title {
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--nr-accent);
+    margin: 0;
+}
+
+.nr-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: left;
+}
+
+.nr-session {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.nr-session-label {
+    font-size: 1.5rem;
+    color: var(--nr-muted);
+    margin: 0 0 0.25rem 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nr-session-id {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 0;
+    color: var(--nr-text);
+}
+
+/* driver list styles */
+.nr-drivers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 500px;
+}
+
+.nr-driver {
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.nr-driver--empty {
+    justify-content: center;
+    color: var(--nr-muted);
+    font-style: italic;
+    background: rgba(255,106,0,0.08);
+    border-color: rgba(255,106,0,0.25);
+}
+
+.nr-car{
+    font-weight: 700;
+    padding: 0.35rem 0.7rem;
+    margin: 0.1rem;
+    border-radius: 4px;
+    background: var(--nr-car-bg);
+    color: var(--nr-accent);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+.nr-name {
+    font-size: 1.2rem;
+    font-weight: 550;
+    padding: 0.35rem 0.7rem;
+}
+
+/* idle/no data state */
+.nr-idle {
+    text-align: center;
+}
+
+.nr-idle-icon {
+    font-size: 4rem;
+    margin: 0 0 1rem 0;
+}
+
+.nr-idle-text {
+    font-size: 1.7rem;
+    font-weight: 666;
+    margin: 0 0 0.5rem 0;
+}
+
+.nr-idle-sub {
+    color: var(--nr-muted);
+    margin: 0;
+}
+
+/* error state */
+.nr-error {
+    text-align: center;
+}
+
+.nr-error-icon {
+    font-size: 4rem;
+}
+
+.nr-error-text {
+    font-size: 1.8rem;
+    font-weight: 666;
+    color: var(--nr-error);
+    margin: 0 0 0.5rem 0;
+}
+
+.nr-error-sub {
+    color: var(--nr-muted);
+    margin: 0;
+}
+
+/* footer status */
+.nr-status {
+    text-align: center;
+    padding-top: 1rem;
+}
+
+.nr-conn {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.2rem;
+}
+
+.nr-conn--offline {
+    color: var(--nr-error);
+    background: rgba(255,59,59,0.15);
+}
+
+.nr-conn--online {
+    color: var(--nr-success);
+    background: rgba(0,255,140,0.2);
+}
+
+/* fullscreen */
+.btn-fullscreen {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    z-index: 10; /* pushes layer on top */
+    touch-action: manipulation; /* touch/safari compat fix */
+}
+
+.btn-fullscreen:hover, /* touch/safari compat fix */
+.btn-fullscreen:active {
+    opacity: 1;
+}
+
+.btn-fullscreen:focus {
+    outline: 2px solid white;
+}

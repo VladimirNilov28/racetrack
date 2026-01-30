@@ -3,15 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Race</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="../css/next-race.css">
+    <script src="../js/next-race.js"></script>
 </head>
 <body>
-    <h1>OK: next-race</h1>
-    <button id="ping-btn">
-        <span>PING</span>
+    <main class="nr-page">
+        <header class="nr-header">
+            <h1 class="nr-title">Next Race</h1>
+        </header>
+
+        <section class="nr-content" data-nr="content">
+            <p class="nr-idle">Waiting for session data...</p>
+        </section>
+
+        <footer class="nr-footer">
+            <span data-nr="conn-status" class="nr-conn nr-conn--offline">Offline...</span>
+        </footer>
+    </main>
+
+    <button id="pub-fullscreen" class="btn-fullscreen">
+        <span>⛶</span>
     </button>
+
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="../js/main.js"></script>
+    <script type="module" src="../js/next-race.js"></script>
 </body>
 </html>
