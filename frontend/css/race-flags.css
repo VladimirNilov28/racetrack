@@ -1,0 +1,111 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: sans-serif;
+    background-color: #333;
+}
+
+/* this is the flag */
+#flag-display {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    font-weight: bold;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* text message styles, will be removed */
+/*.flag-message{
+    text-align: center;
+    z-index: 2;
+}
+
+.flag-icon {
+    font-size: 120px;
+    margin-bottom: 20px;
+}
+
+.flag-text {
+    font-size: 60px;
+    margin-bottom:10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.flag-subtext {
+    font-size: 24px;
+}*/
+
+/* colors go here */
+/* .idle is probably not needed */
+.idle {
+    background: gray;
+    color: white;
+}
+
+.safe {
+    background: green;
+    color: white;
+}
+
+.hazard {
+    background: yellow;
+    color: black;
+}
+
+.danger {
+    background: red;
+    color: white;
+}
+
+.finish {
+    background-color: white;
+    background-image: conic-gradient(
+        black 90deg,
+        white 90deg 180deg,
+        black 180deg 270deg,
+        white 270deg
+    );
+    background-size: 100px 100px;
+    background-attachment: fixed;
+}
+
+/* will be removed */
+/*.finished .flag-message {
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid white;
+}*/
+
+/* fullscreen implementation v2 */
+.btn-fullscreen {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    z-index: 10; /* pushes layer on top */
+    touch-action: manipulation; /* touch/safari compat fix */
+}
+
+.btn-fullscreen:hover, /* touch/safari compat fix */
+.btn-fullscreen:active {
+    opacity: 1;
+}
+
+.btn-fullscreen:focus {
+    outline: 2px solid white;
+}
