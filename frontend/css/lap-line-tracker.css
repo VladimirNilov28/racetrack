@@ -1,0 +1,312 @@
+/* =========================================
+   Lap-line Tracker
+   ========================================= */
+
+:root {
+  --llt-bg: #070a10;
+  --llt-panel: rgba(15, 20, 31, 0.96);
+  --llt-line: rgba(255,255,255,0.12);
+
+  --llt-orange: #ff6a00;
+  --llt-green: #00ff8c;
+  --llt-red: #d01818;
+  --llt-blue1: #2b7cff;
+  --llt-blue2: #1a56d9;
+  --llt-yellow1: #ffbf2f;
+  --llt-yellow2: #d79600;
+
+  --llt-text: #e9eef7;
+  --llt-muted: rgba(233,238,247,0.70);
+
+  /* Sharp corners */
+  --llt-r-header: 6px;
+  --llt-r-card: 3px;
+  --llt-r-row: 3px;
+  --llt-r-btn: 3px;
+}
+
+body {
+  color: var(--llt-text);
+  background:
+    radial-gradient(1200px 700px at 50% 0%, rgba(0,255,140,0.08), transparent 55%),
+    radial-gradient(1000px 700px at 20% 10%, rgba(255,255,255,0.04), transparent 60%),
+    radial-gradient(1000px 700px at 80% 20%, rgba(255,255,255,0.03), transparent 60%),
+    radial-gradient(1200px 900px at 50% 88%, rgba(0,0,0,0.70), transparent 60%),
+    var(--llt-bg);
+}
+
+.llt_theme .muted { opacity: 1; color: var(--llt-muted); }
+
+/* ---- Header ---- */
+.llt_header {
+  position: relative;
+  padding: 1rem 1.1rem;
+  border-radius: var(--llt-r-header);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent 55%), rgba(10,14,22,0.92);
+  border: 1px solid var(--llt-line);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+}
+
+.llt_header::before,
+.llt_header::after {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--llt-green) 18%, var(--llt-green) 82%, transparent 100%);
+  opacity: 0.9;
+}
+.llt_header::before { top: 0.65rem; }
+.llt_header::after  { bottom: 0.65rem; opacity: 0.55; }
+
+.llt_title { font-style: italic; letter-spacing: 0.9px; }
+
+.badge {
+  color: #00ff8c;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.badge_offline {
+  color: #ff3b3b;
+  border-color: rgba(255,59,59,0.40);
+  box-shadow: inset 0 0 0 1px rgba(255,59,59,0.10);
+}
+
+.llt_status_ticks {
+  width: 36px;
+  height: 10px;
+  margin-left: 0.4rem;
+  border-radius: 4px;
+  background:
+    linear-gradient(90deg,
+      rgba(0,255,140,0.0) 0%,
+      rgba(0,255,140,0.85) 25%,
+      rgba(0,255,140,0.0) 55%,
+      rgba(0,255,140,0.75) 75%,
+      rgba(0,255,140,0.0) 100%);
+  opacity: 0.65;
+}
+
+/* ---- Stage + rails ---- */
+.llt_stage {
+  position: relative;
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 6px;
+  background:
+    radial-gradient(1000px 520px at 30% 0%, rgba(0,255,140,0.08), transparent 60%),
+    radial-gradient(900px 520px at 75% 15%, rgba(255,255,255,0.05), transparent 65%),
+    radial-gradient(900px 520px at 50% 95%, rgba(0,0,0,0.55), transparent 60%);
+}
+
+.llt_rails {
+  position: absolute;
+  inset: 0.85rem;
+  pointer-events: none;
+  opacity: 0.65;
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(0,255,140,0.85) 15%, rgba(0,255,140,0.85) 85%, transparent 100%) 0 12% / 100% 2px no-repeat,
+    linear-gradient(90deg, transparent 0%, rgba(0,255,140,0.55) 18%, rgba(0,255,140,0.55) 82%, transparent 100%) 0 54% / 100% 2px no-repeat,
+    linear-gradient(90deg, transparent 0%, rgba(0,255,140,0.35) 20%, rgba(0,255,140,0.35) 80%, transparent 100%) 0 96% / 100% 2px no-repeat;
+  filter: blur(0.15px);
+}
+
+.llt_stage .llt_grid { position: relative; z-index: 1; }
+
+/* ---- Grid ---- */
+.llt_grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 1100px) {
+  .llt_grid {
+    grid-template-columns: 1fr 2.5fr 1fr;
+    grid-template-areas:
+      "session cars recent";
+    align-items: stretch;
+  }
+  .llt_grid > article:nth-child(1) { grid-area: session; }
+  .llt_grid > article:nth-child(2) { grid-area: cars; }
+  .llt_grid > article:nth-child(3) { grid-area: recent; }
+}
+
+/* ---- Card ---- */
+.llt_card {
+  position: relative;
+  border-radius: var(--llt-r-card);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), transparent 35%),
+    linear-gradient(180deg, rgba(0,0,0,0.25), transparent 60%),
+    var(--llt-panel);
+  border: 1px solid var(--llt-line);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    inset 0 -1px 0 rgba(0,0,0,0.35);
+}
+
+.card_bar {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 10px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--llt-green), rgba(0,255,140,0.25));
+  opacity: 0.95;
+}
+
+.card_title {
+  margin-top: 0.55rem;
+  padding-top: 0.35rem;
+  letter-spacing: 0.6px;
+}
+
+.llt_theme .divider { background: rgba(255,255,255,0.14); }
+
+/* ---- Car Buttons Grid ---- */
+.llt_car_grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+
+@media (min-width: 1400px) {
+  .llt_car_grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.llt_car_btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4rem 0.8rem;
+  min-height: 130px;
+  border-radius: var(--llt-r-btn);
+  border: 2px solid rgba(0,255,140,0.30);
+  background:
+    linear-gradient(180deg, rgba(0,255,140,0.08), rgba(0,255,140,0.02)),
+    linear-gradient(180deg, rgba(255,255,255,0.05), transparent 50%),
+    rgba(0,0,0,0.30);
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -1px 0 rgba(0,0,0,0.40);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  color: var(--llt-text);
+}
+
+.llt_car_btn:hover {
+  border-color: rgba(0,255,140,0.55);
+  background:
+    linear-gradient(180deg, rgba(0,255,140,0.12), rgba(0,255,140,0.04)),
+    linear-gradient(180deg, rgba(255,255,255,0.06), transparent 50%),
+    rgba(0,0,0,0.35);
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 32px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    inset 0 -1px 0 rgba(0,0,0,0.40);
+}
+
+.llt_car_btn:active {
+  transform: translateY(0);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.40),
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    inset 0 -1px 0 rgba(0,0,0,0.40);
+}
+
+.llt_car_btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: rgba(255,255,255,0.12);
+}
+
+.llt_car_num {
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--llt-green);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.4rem;
+}
+
+.llt_car_driver {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 0.3rem;
+  opacity: 0.9;
+  text-align: center;
+}
+
+.llt_car_laps {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+/* ---- Timecode ---- */
+.llt_timecode {
+  font-weight: 900;
+  letter-spacing: 1.0px;
+  font-size: 1.5rem;
+  color: rgba(255,179,0,0.95);
+}
+
+.timecode {
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  color: rgba(255,179,0,0.95);
+}
+
+/* ---- Mode badge ---- */
+.llt_mode_badge {
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--llt-green);
+}
+
+/* ---- Recent laps list ---- */
+.list_slots li {
+  border-radius: var(--llt-r-row);
+  border: 1px solid rgba(255,255,255,0.10);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.05), transparent 55%),
+    rgba(0,0,0,0.18);
+}
+
+/* ---- Buttons ---- */
+.llt_theme .btn {
+  border-radius: var(--llt-r-btn);
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.20);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  color: var(--llt-text);
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -1px 0 rgba(0,0,0,0.35);
+}
+
+.llt_theme .btn:active { transform: translateY(1px); }
