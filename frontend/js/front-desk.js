@@ -98,9 +98,14 @@ function ensureSelection() {
 
 // Session ID
 function makeNextSessionId() {
-  const upcoming = getUpcomingSessions(state);
+  // Check all sessions
+  const allSessions = [
+    ...getUpcomingSessions(state),
+    state?.sessions?.current,
+    state?.sessions?.lastResult,
+  ].filter(Boolean);
 
-  const nums = upcoming
+  const nums = allSessions
     .map((s) => String(s.id ?? ""))
     .map((id) => {
       const m = id.match(/^S(\d+)$/i);
