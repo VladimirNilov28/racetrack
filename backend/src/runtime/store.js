@@ -55,13 +55,13 @@ export function dispatch(cmd) {
 
     let next = state;
 
-    
+
 
     switch (type) {
         // --- RACE (Safety / Race Control) ---
         case "cmd:race:start":
-            next = startRace(next, RACE_DURATION_SEC);
-            break;
+          next = startRace(next, payload?.durationSec ?? RACE_DURATION_SEC);
+          break
 
         case "cmd:race:set-mode":
             next = setRaceMode(next, payload?.mode);
