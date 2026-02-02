@@ -1,9 +1,9 @@
 :root {
     --nr-bg: #0a0e14;
     --nr-text: #e9eef7;
-    --nr-muted: rgba(233, 238, 247, 0.6);
+    --nr-muted: rgb(233 238 247 / 60%);
     --nr-accent: #ff6a00;
-    --nr-car-bg: rgba(255, 106, 0, 0.15);
+    --nr-car-bg: rgb(255 106 0 / 15%);
     --nr-error: #ff3b3b;
     --nr-success: #00ff8c;
 }
@@ -17,6 +17,7 @@ body {
     font-family: sans-serif;
 }
 
+/* whole page */
 .nr-page {
     display: flex;
     flex-direction: column;
@@ -28,7 +29,7 @@ body {
 /* header styles */
 .nr-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 0.1rem;
 }
 
 .nr-title {
@@ -40,6 +41,7 @@ body {
     margin: 0;
 }
 
+/* content block */
 .nr-content {
     flex: 1;
     display: flex;
@@ -48,27 +50,29 @@ body {
     justify-content: left;
 }
 
+/* session info */
 .nr-session {
+    list-style: none;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .nr-session-label {
     font-size: 1.5rem;
     color: var(--nr-muted);
-    margin: 0 0 0.25rem 0;
+    margin: 0 0 0.25rem;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .nr-session-id {
-    font-size: 3rem;
+    font-size: 1.5rem;
     font-weight: bold;
     margin: 0;
     color: var(--nr-text);
 }
 
-/* driver list styles */
+/* drivers list */
 .nr-drivers {
     list-style: none;
     margin: 0;
@@ -81,19 +85,19 @@ body {
     display: flex;
     align-items: center;
     border-radius: 6px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
 }
 
-.nr-driver--empty {
+.nr-driver-empty {
     justify-content: center;
     color: var(--nr-muted);
     font-style: italic;
-    background: rgba(255,106,0,0.08);
-    border-color: rgba(255,106,0,0.25);
+    background: rgb(255 106 0 / 8%);
+    border-color: rgb(255 106 0 / 25%);
 }
 
-.nr-car{
+.nr-car {
     font-weight: 700;
     padding: 0.35rem 0.7rem;
     margin: 0.1rem;
@@ -117,13 +121,13 @@ body {
 
 .nr-idle-icon {
     font-size: 4rem;
-    margin: 0 0 1rem 0;
+    margin: 0 0 1rem;
 }
 
 .nr-idle-text {
     font-size: 1.7rem;
     font-weight: 666;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.5rem;
 }
 
 .nr-idle-sub {
@@ -144,7 +148,7 @@ body {
     font-size: 1.8rem;
     font-weight: 666;
     color: var(--nr-error);
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.5rem;
 }
 
 .nr-error-sub {
@@ -153,12 +157,12 @@ body {
 }
 
 /* footer status */
-.nr-status {
+.pub-status {
     text-align: center;
     padding-top: 1rem;
 }
 
-.nr-conn {
+.pub-conn {
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -167,17 +171,17 @@ body {
     border-radius: 0.2rem;
 }
 
-.nr-conn--offline {
+.pub-conn-offline {
     color: var(--nr-error);
-    background: rgba(255,59,59,0.15);
+    background: rgb(255 59 59 / 15%);
 }
 
-.nr-conn--online {
+.pub-conn-online {
     color: var(--nr-success);
-    background: rgba(0,255,140,0.2);
+    background: rgb(0 255 140 / 20%);
 }
 
-/* fullscreen */
+/* fullscreen button */
 .btn-fullscreen {
     position: fixed;
     bottom: 1rem;
@@ -186,7 +190,7 @@ body {
     height: 48px;
     border: none;
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0 0 0 / 50%);
     color: white;
     font-size: 24px;
     cursor: pointer;
@@ -203,4 +207,10 @@ body {
 
 .btn-fullscreen:focus {
     outline: 2px solid white;
+}
+
+/* ping button */
+.btn-ping {
+    justify-content: center;
+    z-index: 20;
 }

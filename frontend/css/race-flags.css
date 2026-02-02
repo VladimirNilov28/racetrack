@@ -20,29 +20,8 @@ body {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* text message styles, will be removed */
-/*.flag-message{
-    text-align: center;
-    z-index: 2;
-}
-
-.flag-icon {
-    font-size: 120px;
-    margin-bottom: 20px;
-}
-
-.flag-text {
-    font-size: 60px;
-    margin-bottom:10px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-.flag-subtext {
-    font-size: 24px;
-}*/
-
 /* colors go here */
+
 /* .idle is probably not needed */
 .idle {
     background: gray;
@@ -76,12 +55,6 @@ body {
     background-attachment: fixed;
 }
 
-/* will be removed */
-/*.finished .flag-message {
-    background: rgba(0, 0, 0, 0.85);
-    border: 2px solid white;
-}*/
-
 /* fullscreen implementation v2 */
 .btn-fullscreen {
     position: fixed;
@@ -91,7 +64,7 @@ body {
     height: 48px;
     border: none;
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0 0 0 / 50%);
     color: white;
     font-size: 24px;
     cursor: pointer;

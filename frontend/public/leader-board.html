@@ -3,15 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+        <text y='.9em' font-size='90'>🏆</text></svg>"/>
     <link rel="stylesheet" href="../css/styles.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="../css/next-race.css">
 </head>
 <body>
-    <h1>OK: leader-board</h1>
-    <button id="ping-btn">
+    <main class="lb-page">
+        <header class="lb-header">
+            <h1 class="lb-title">Leaderboard</h1>
+        </header>
+
+        <section class="lb-content" data-lb="content">
+            <p class="lb-idle">Waiting for session data...</p>
+        </section>
+
+        <footer class="pub-footer">
+            <span data-nr="conn-status" class="pub-conn pub-conn-offline">Offline...</span>
+        </footer>
+    </main>
+
+    <button id="pub-fullscreen" class="btn-fullscreen">
+        <span>⛶</span>
+    </button>
+
+    <!--
+    <button id="pub-ping" class="btn-ping">
         <span>PING</span>
     </button>
+    -->
+
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="../js/main.js"></script>
+    <!--
+    <script type="module" src="../js/helpers.js"></script>
+    -->
+    <script type="module" src="../js/leader-board.js"></script>
 </body>
 </html>
