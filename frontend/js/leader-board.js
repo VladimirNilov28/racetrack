@@ -1,8 +1,12 @@
 import socket from "./socket.js";
 
+const elSessionLabel = document.querySelector(`[data-lb="session-info"] .pub-session-label`);
+const elSessionId = document.querySelector(`[data-lb="session-info"] .pub-session-id`);
+const elTimerDisplay = document.querySelector(`[data-lb="timer-display"] .pub-flag-timer`);
+const elFlagMode = document.querySelector(`[data-lb="flag-mode"]`);
 const elContent = document.querySelector(`[data-lb="content"]`);
-const elConn = document.querySelector(`[data-nr="conn-status"]`);
 const elFullscreen = document.getElementById("pub-fullscreen");
+const elConn = document.querySelector(`[data-lb="pub-status"]`);
 
 let state = null;
 
@@ -52,7 +56,7 @@ function getLeaderboard(session) {
     const aHasLap = a.fastestLap != null;
     const bHasLap = b.fastestLap != null;
 
-    // both have laps: sort by fastest time, acending
+    // both have laps: sort by fastest time, ascending
     if (aHasLap && bHasLap) {
       return a.fastestLap - b.fastestLap;
     }
@@ -96,100 +100,114 @@ function formatLapTime(ms) {
 function renderLeaderboard() {
   if (!elContent) return;
 
+  // first, get relevant data and start assembling the header
+  const isCurrentRace = state?.sessions?.current != null;
+  const remainingTime = isCurrentRace ? getRemainingTime(state) : null;
+  const remainingTimer = remainingTime != null ? formatTimer(remainingTime) : "--:--";
+
+  if (elTimerDisplay) {
+    elTimerDisplay.textContent = remainingTimer;
+    elTimerDisplay.classList.toggle("pub-flag-hidden", !isCurrentRace);
+  }
+
+  const raceMode = state?.race?.mode?.value ?? "safe";
+  if (elFlagMode) {
+    elFlagMode.textContent = raceMode.toUpperCase();
+    elFlagMode.setAttribute("data-mode", raceMode);
+  }
+
+  const {session, label} = getDisplaySession(state);
+  if (elSessionLabel && elSessionId) {
+    if (session) {
+      elSessionLabel.textContent = `${label}:`;
+      elSessionId.textContent = session.id ?? "---";
+    } else {
+      elSessionLabel.textContent = "No Active Race";
+      elSessionId.textContent = "---";
+    }
+  }
+
+  // second, check connection state and render content area
+  // no connection:
   if (!socket.connected) {
     elContent.innerHTML = `
-      <div class="nr-error">
-        <p class="nr-error-icon">⚠️</p>
-        <p class="nr-error-text">Connection lost</p>
-        <p class="nr-error-sub">Attempting to reconnect...</p>
+      <div class="pub-error">
+        <p class="pub-error-icon">⚠️</p>
+        <p class="pub-error-text">Connection lost</p>
+        <p class="pub-error-sub">Attempting to reconnect...</p>
       </div>
     `;
     return;
   }
 
-  const {session, label} = getDisplaySession(state);
-
-  // no current/prev session
+  // no current/prev session:
   if (!session) {
     elContent.innerHTML = `
-        <div class="nr-idle">
-            <p class="nr-idle-icon">🏁</p>
-            <p class="nr-idle-text">No races yet</p>
-            <p class="nr-idle-sub">Waiting for first race to start...</p>
+        <div class="pub-idle">
+            <p class="pub-idle-icon">🏁</p>
+            <p class="pub-idle-text">No races yet</p>
+            <p class="pub-idle-sub">Waiting for first race to start...</p>
         </div>
     `;
     return;
   }
 
   const leaderboard = getLeaderboard(session);
-  const sessionId = session.id ?? "B===D";
-  const raceMode = state?.race?.mode?.value ?? "safe";
-  const isCurrentRace = state?.sessions?.current != null;
 
-  // ?? current race timer // fix MS
-  const remainingTime = isCurrentRace ? getRemainingTime(state) : 0;
-  const remainingTimer = remainingTime != null ? formatTimer(remainingTime) : "--:--";
-
-  // sess hdr: always
-  let sessionHtml = `
-    <li class="nr-session">
-      <span class="nr-session-label">${escapeHtml(label)}:</span>
-      <span class="nr-session-id">${escapeHtml(sessionId)}</span>
-    </li>
-  `;
-
-  // rem. timer row: only for current race
-  if (isCurrentRace) {
-    sessionHtml += `
-      <li class="nr-timer">
-        <span>Time Remaining:</span>
-        <span class="nr-timer-value">${remainingTimer}</span>
-      </li>
-    `;
-  }
-
-  // race flag mode indic8or: always
-  sessionHtml += `
-    <li class="nr-mode nr-mode-${escapeHtml(raceMode)}">
-      <span>Race Flag Mode:</span>
-      <span>${escapeHtml(raceMode.toUpperCase())}</span>
-    </li>
-  `;
-
-  // old lb-sorter, will be deleted
-  /* leaderboard.sort((a, b) => {
-      if (a.fastestLap == null) return 1;
-      if (b.fastestLap == null) return -1;
-      return a.fastestLap - b.fastestLap;
-    }); */
-
-  // leaderboard
   let leaderboardHtml;
   if (leaderboard.length === 0) {
-    leaderboardHtml = `<li>No active leaderboard... Yet.</li>`;
+    leaderboardHtml = `
+      <div class="pub-drivers-list-empty">No active leaderboard... Yet.</div>
+    `;
   } else {
-    leaderboardHtml = leaderboard
-    .map((t, index) => {
-      const position = index + 1;
-      const positionClass = position === 1 ? "nr-position-1st" : "";
+    const rows = leaderboard.map((t, index) => {
+      const hasLap = t.fastestLap != null;
+      const position = hasLap ? index + 1 : null;
+
+      // mmm, medals...
+      let medalHtml = "";
+      if (hasLap && position === 1) medalHtml = `<span class=pub-medal-gold>🥇</span>`;
+      else if (hasLap && position === 2) medalHtml = `<span class=pub-medal-silver>🥈</span>`;
+      else if (hasLap && position === 3) medalHtml = `<span class=pub-medal-bronze>🥉</span>`;
+
+      // position display
+      const posDisplay = hasLap ? position : "-";
+      const posClass = hasLap ? "" : "pub-position-none";
+      const rowClass = "pub-driver"; // row formatting
 
       return `
-        <li class="nr-driver ${positionClass}">
-          <span class="nr-position">${position}</span>
-          <span class="nr-car">Car ${escapeHtml(t.car ?? "?")}</span>
-          <span class="nr-name">${escapeHtml(t.name ?? "Unknown")}</span>
-          <span>Fastest: ${formatLapTime(t.fastestLap)}</span>
-          <span>Laps: ${escapeHtml(t.laps ?? 0)}</span>
-        </li>
+        <tr class="${rowClass}">
+          <td class="pub-col-medal">${medalHtml}</td>
+          <td class="pub-col-pos ${posClass}">${posDisplay}</td>
+          <td class="pub-col-car"><span class="pub-car">CAR ${escapeHtml(t.car ?? "?")}</span></td>
+          <td class="pub-col-name">${escapeHtml(t.name ?? "Unknown")}</td>
+          <td class="pub-col-fastest">${formatLapTime(t.fastestLap)}</td>
+          <td class="pub-col-laps">${escapeHtml(t.laps ?? 0)}</td>
+        </tr>
       `;
-    })
-    .join("");
+    }).join("");
+
+    // leaderboard column row
+    leaderboardHtml = `
+    <table class="pub-drivers-list">
+      <thead>
+        <tr class="pub-drivers-list-header">
+          <th class="pub-col-medal">🏆</th>
+          <th class="pub-col-pos">Pos</th>
+          <th class="pub-col-car">Car #</th>
+          <th class="pub-col-name">Driver</th>
+          <th class="pub-col-fastest">Best Lap</th>
+          <th class="pub-col-laps">Laps</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
   }
 
-  elContent.innerHTML = `
-    ${sessionHtml}
-    <ul class="nr-drivers">${leaderboardHtml}</ul>
-  `;
+  elContent.innerHTML = leaderboardHtml;
 }
 
 // sockets events
@@ -198,12 +216,13 @@ socket.on("connect", () => {
   renderLeaderboard();
 });
 
-socket.on('disconnect', () => {
+socket.on("disconnect", () => {
   setConn(false);
   stopLocalTicker();  // Add this line
   renderLeaderboard();
 });
 
+// local countdown ticker helpers
 let localTickerInterval = null;
 
 function startLocalTicker() {
@@ -218,17 +237,17 @@ function stopLocalTicker() {
   }
 }
 
-// DEBUG
-// socket.on("connect", () => console.log("Connected:", socket.id));
-// socket.on("connect_error", (err) => console.error("Connection error:", err));
-
 // main event
 socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
-  console.log("State received:", JSON.stringify(snapshot, null, 2));
+  console.log("Drivers:", snapshot?.sessions?.current?.drivers?.map(d => ({
+    car: d.car,
+    laps: d.laps,
+    fastestLap: d.fastestLap,
+  })));
   state = snapshot;
   renderLeaderboard();
 
-  if (state?.timer?.status === 'running') {
+  if (state?.timer?.status === "running") {
     startLocalTicker();
   } else {
     stopLocalTicker();
@@ -244,7 +263,7 @@ elFullscreen?.addEventListener("click", () => {
   }
 });
 
-// DEBUG: exposing socket globally for emulating lap-line-tracker
+// DEBUG: exposing socket globally for emulating lap-line-tracker, very noice.
 if (typeof window !== "undefined") {
   window.debugSocket = socket;
   Object.defineProperty(window, "state", {get: () => state});

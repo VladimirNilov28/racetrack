@@ -2,7 +2,7 @@ import socket from "./socket.js";
 
 // elements shall be defined here
 const elContent = document.querySelector(`[data-nr="content"]`);
-const elConn = document.querySelector(`[data-nr="conn-status"]`);
+const elConn = document.querySelector(`[data-nr="pub-status"]`);
 const elFullscreen = document.getElementById("pub-fullscreen");
 
 let state = null;
@@ -43,10 +43,10 @@ function renderNextRace() {
   // handling disconnected state
   if (!socket.connected) {
     elContent.innerHTML = `
-            <div class="nr-error">
-                <p class="nr-error-icon">⚠️</p>
-                <p class="nr-error-text">Connection lost</p>
-                <p class="nr-error-sub">Attempting to reconnect...</p>
+            <div class="pub-error">
+                <p class="pub-error-icon">⚠️</p>
+                <p class="pub-error-text">Connection lost</p>
+                <p class="pub-error-sub">Attempting to reconnect...</p>
             </div>
         `;
     return;
@@ -58,10 +58,10 @@ function renderNextRace() {
   // no upcoming sessions
   if (!next) {
     elContent.innerHTML = `
-            <div class="nr-idle">
-                <p class="nr-idle-icon">🙈</p>
-                <p class="nr-idle-text">No upcoming races</p>
-                <p class="nr-idle-sub">Please wait...</p>
+            <div class="pub-idle">
+                <p class="pub-idle-icon">🙈</p>
+                <p class="pub-idle-text">No upcoming races</p>
+                <p class="pub-idle-sub">Please wait...</p>
             </div>
         `;
     return;
@@ -78,22 +78,22 @@ function renderNextRace() {
   let driversHtml;
   /* cases for sessions both without and with drivers assigned */
   if (drivers.length === 0) {
-    driversHtml = `<li class="nr-driver nr-driver-empty">No racer data... Yet.</li>`;
+    driversHtml = `<li class="pub-driver pub-drivers-list-empty">No racer data... Yet.</li>`;
   } else {
     driversHtml = drivers.map((d) => `
-            <li class="nr-driver">
-                <span class="nr-car">Car ${escapeHtml(d.car ?? "?")}</span>
-                <span class="nr-name">${escapeHtml(d.name ?? "Unknown")}</span>
+            <li class="pub-driver">
+                <span class="pub-car">Car ${escapeHtml(d.car ?? "?")}</span>
+                <span class="pub-driver-name">${escapeHtml(d.name ?? "Unknown")}</span>
             </li>`).join("");
   }
 
   /* mash everything together */
   elContent.innerHTML = `
-        <li class="nr-session">
-            <span class="nr-session-label">Session:</span>
-            <span class="nr-session-id">${escapeHtml(sessionId)}</span>
+        <li class="pub-session">
+            <span class="pub-session-label">Session:</span>
+            <span class="pub-session-id">${escapeHtml(sessionId)}</span>
         </li>
-        <ul class="nr-drivers">${driversHtml}</ul>
+        <ul class="pub-drivers-list">${driversHtml}</ul>
     `;
 }
 

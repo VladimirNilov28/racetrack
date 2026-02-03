@@ -1,8 +1,28 @@
+:root {
+    --nr-bg: #0a0e14;
+    --nr-text: #e9eef7;
+    --nr-muted: rgb(233 238 247 / 60%);
+    --nr-accent: #ff6a00;
+    --nr-car-bg: rgb(255 106 0 / 15%);
+    --nr-error: #ff3b3b;
+    --nr-success: #00ff8c;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: var(--nr-bg);
+    color: var(--nr-text);
+    font-family: sans-serif;
+    overflow: hidden;
+}
+
 /* CSS FOR AUTHENTICATION FORM (CHANGE ME IF YOU WANT) */
 .login-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgb(0 0 0 / 85%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,4 +59,418 @@
     color: #ff4d4d;
     min-height: 1em;
 }
-/*==============================*/
+
+/* WHOLE PAGE */
+.pub-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 2vh 2vw;
+    box-sizing: border-box;
+}
+
+/* HEADER STYLES */
+.pub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2vw;
+    margin-bottom: 3vh;
+    flex-shrink: 0;
+}
+
+.pub-header-left,
+.pub-header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5vh;
+    min-width: 15vw;
+    flex: 0 0 auto;
+}
+
+.pub-header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1vh;
+    flex: 1 1 auto;
+}
+
+.pub-title {
+    font-size: 10vh;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.2vw;
+    color: var(--nr-accent);
+    margin: 0;
+    line-height: 1;
+}
+
+/* header boxes */
+.pub-flag-label {
+    font-size: 3vh;
+    color: var(--nr-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1vw;
+    font-weight: 600;
+}
+
+.pub-flag-box {
+    width: 8vw;
+    height: 6vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4vh;
+    font-weight: bold;
+    border: 2px solid rgb(255 255 255 / 20%);
+    border-radius: 4px;
+}
+
+/* flag mode colors */
+.pub-flag-mode {
+    text-transform: uppercase;
+    font-size: 2vw;
+}
+
+.pub-flag-mode[data-mode="safe"] {
+    background: green;
+    color: white;
+}
+
+.pub-flag-mode[data-mode="hazard"] {
+    background: yellow;
+    color: black;
+}
+
+.pub-flag-mode[data-mode="danger"] {
+    background: red;
+    color: white;
+}
+
+.pub-flag-mode[data-mode="finish"] {
+    background-color: white;
+    background-image: conic-gradient(
+            black 90deg,
+            white 90deg 180deg,
+            black 180deg 270deg,
+            white 270deg
+    );
+    background-size: 50px 50px;
+    background-attachment: fixed;
+    color: black;
+}
+
+/* timer box; dimmed when not running */
+.pub-flag-timer {
+    background: rgb(255 255 255 / 10%);
+    color: var(--nr-text);
+    font-family: monospace;
+}
+
+.pub-flag-timer.pub-flag-hidden {
+    opacity: 0.3;
+}
+
+/* session info */
+.pub-session {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.pub-session-label {
+    font-size: 5vh;
+    color: var(--nr-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1vw;
+    display: inline;
+    margin-right: 1vw;
+}
+
+.pub-session-id {
+    font-size: 5vh;
+    font-weight: bold;
+    color: var(--nr-text);
+    display: inline;
+}
+
+/* CONTENT BLOCK */
+.pub-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    overflow: hidden; /* to prevent internal scrolling */
+}
+
+/* TABLE FOR LISTING DRIVERS */
+
+/* empty driver list */
+.pub-drivers-list-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 3vh;
+    text-align: center;
+    color: var(--nr-muted);
+    font-style: italic;
+    background: rgb(255 106 0 / 8%);
+    border-color: rgb(255 106 0 / 25%);
+    padding: 2vh;
+    box-sizing: border-box;
+}
+
+/* populated driver list */
+.pub-drivers-list {
+    width: 100%;
+    flex: 1;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.pub-drivers-list thead {
+    background: rgb(255 255 255 / 10%);
+    height: 7vh;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.pub-drivers-list thead th {
+    padding: 0 0.5vw;
+    vertical-align: middle;
+    height: 7vh;
+    box-sizing: border-box;
+}
+
+.pub-drivers-list tbody {
+    display: block;
+    flex: 1;
+}
+
+.pub-drivers-list tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    background: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    height: 7vh;
+}
+
+.pub-drivers-list tbody td {
+    padding: 0 0.5vw;
+    border: 1px solid rgb(255 255 255 / 10%);
+    vertical-align: middle;
+    height: 7vh;
+    box-sizing: border-box;
+}
+
+.pub-driver {
+    border-radius: 0;
+    background: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
+}
+
+.pub-car {
+    display: inline-block;
+    font-weight: 700;
+    color: var(--nr-accent);
+    font-size: 3vh;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pub-driver-name {
+    font-size: 3.5vh;
+    font-weight: 550;
+    padding: 0.35rem 0.7rem;
+}
+
+/* drivers list column definitions for leader-board */
+.pub-col-medal {
+    width: 5%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+.pub-col-pos {
+    width: 6%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+.pub-col-car {
+    width: 7%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+.pub-col-name { /* TEST: added line truncation */
+    width: auto;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 3.5vh;
+    padding-left: 0.5vh;
+}
+
+.pub-col-fastest {
+    width: 18%;
+    text-align: center;
+    font-size: 3.5vh;
+
+    /* font-family: monospace; fixed-width for better scaling */
+}
+
+.pub-col-laps {
+    width: 8%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+/* medal icons */
+.pub-medal-gold {
+    color: #ffd700;
+    font-size: 3vh;
+}
+
+.pub-medal-silver {
+    color: #c0c0c0;
+    font-size: 3vh;
+}
+
+.pub-medal-bronze {
+    color: #cd7f32;
+    font-size: 3vh;
+}
+
+/* position styling for drivers without laps */
+.pub-position-none {
+    color: var(--nr-muted);
+}
+
+/* idle/no data state */
+.pub-idle {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.pub-idle-icon {
+    font-size: 25vh;
+    margin: 0 0 2vh;
+}
+
+.pub-idle-text {
+    font-size: 10vh;
+    font-weight: 700;
+    margin: 0 0 1vh;
+}
+
+.pub-idle-sub {
+    font-size: 5vh;
+    color: var(--nr-muted);
+    margin: 0;
+}
+
+/* error/disconnected state */
+.pub-error {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.pub-error-icon {
+    font-size: 25vh;
+    margin: 0 0 2vh;
+}
+
+.pub-error-text {
+    font-size: 10vh;
+    font-weight: 700;
+    color: var(--nr-error);
+    margin: 0 0 1vh;
+}
+
+.pub-error-sub {
+    font-size: 5vh;
+    color: var(--nr-muted);
+    margin: 0;
+}
+
+/* FOOTER */
+.pub-footer {
+    position: relative;
+    height: 0;
+}
+
+/* PUBLIC SCREENS: ONLINE/OFFLINE STATUS INDICATOR */
+.pub-status {
+    text-align: center;
+    padding-top: 1rem;
+}
+
+.pub-conn {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.2rem;
+    z-index: 10;
+}
+
+.pub-conn-offline {
+    color: var(--nr-error);
+    background: rgb(255 59 59 / 15%);
+}
+
+.pub-conn-online {
+    color: var(--nr-success);
+    background: rgb(0 255 140 / 20%);
+}
+
+/* PUBLIC SCREENS: FULLSCREEN BUTTON */
+.btn-fullscreen {
+    position: fixed;
+    bottom: 1rem;
+    right: 4rem;
+    width: 8vh;
+    height: 8vh;
+    font-size: 4vh;
+    border: none;
+    border-radius: 8px;
+    background: rgb(0 0 0 / 50%);
+    color: white;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    z-index: 10; /* pushes layer on top */
+    touch-action: manipulation; /* touch/safari compat fix */
+}
+
+.btn-fullscreen:hover, /* touch/safari compat fix */
+.btn-fullscreen:active {
+    opacity: 1;
+}
+
+.btn-fullscreen:focus {
+    outline: 2px solid white;
+}
+
+/* FRONTEND DEBUG: PING BUTTON */
+.btn-ping {
+    z-index: 20;
+}

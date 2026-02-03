@@ -18,7 +18,7 @@ body {
 }
 
 /* whole page */
-.nr-page {
+.pub-page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -27,12 +27,12 @@ body {
 }
 
 /* header styles */
-.nr-header {
+.pub-header {
     text-align: center;
     margin-bottom: 0.1rem;
 }
 
-.nr-title {
+.pub-title {
     font-size: 3rem;
     font-weight: bold;
     text-transform: uppercase;
@@ -42,7 +42,7 @@ body {
 }
 
 /* content block */
-.nr-content {
+.pub-content {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -51,13 +51,13 @@ body {
 }
 
 /* session info */
-.nr-session {
+.pub-session {
     list-style: none;
     text-align: center;
     margin-bottom: 1rem;
 }
 
-.nr-session-label {
+.pub-session-label {
     font-size: 1.5rem;
     color: var(--nr-muted);
     margin: 0 0 0.25rem;
@@ -65,7 +65,7 @@ body {
     letter-spacing: 1px;
 }
 
-.nr-session-id {
+.pub-session-id {
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0;
@@ -73,7 +73,7 @@ body {
 }
 
 /* drivers list */
-.nr-drivers {
+.pub-drivers-list {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -81,7 +81,7 @@ body {
     max-width: 500px;
 }
 
-.nr-driver {
+.pub-driver {
     display: flex;
     align-items: center;
     border-radius: 6px;
@@ -89,7 +89,7 @@ body {
     border: 1px solid rgb(255 255 255 / 10%);
 }
 
-.nr-driver-empty {
+.pub-drivers-list-empty {
     justify-content: center;
     color: var(--nr-muted);
     font-style: italic;
@@ -97,7 +97,7 @@ body {
     border-color: rgb(255 106 0 / 25%);
 }
 
-.nr-car {
+.pub-car {
     font-weight: 700;
     padding: 0.35rem 0.7rem;
     margin: 0.1rem;
@@ -108,29 +108,29 @@ body {
     text-transform: uppercase;
 }
 
-.nr-name {
+.pub-driver-name {
     font-size: 1.2rem;
     font-weight: 550;
     padding: 0.35rem 0.7rem;
 }
 
 /* idle/no data state */
-.nr-idle {
+.pub-idle {
     text-align: center;
 }
 
-.nr-idle-icon {
+.pub-idle-icon {
     font-size: 4rem;
     margin: 0 0 1rem;
 }
 
-.nr-idle-text {
+.pub-idle-text {
     font-size: 1.7rem;
     font-weight: 666;
     margin: 0 0 0.5rem;
 }
 
-.nr-idle-sub {
+.pub-idle-sub {
     color: var(--nr-muted);
     margin: 0;
 }
@@ -140,18 +140,18 @@ body {
     text-align: center;
 }
 
-.nr-error-icon {
+.pub-error-icon {
     font-size: 4rem;
 }
 
-.nr-error-text {
+.pub-error-text {
     font-size: 1.8rem;
     font-weight: 666;
     color: var(--nr-error);
     margin: 0 0 0.5rem;
 }
 
-.nr-error-sub {
+.pub-error-sub {
     color: var(--nr-muted);
     margin: 0;
 }
