@@ -53,15 +53,18 @@ export function createInitialState() {
             mode: {
                 // "safe" | "hazard" | "danger" | "finish"
                 value: "safe",
-                
+
                 // timestamp when race mode was last changed
                 updatedAt: null,
+
+                // auto start next race after finish
+                autoStartNext: true,
             },
         },
 
         timer: {
             // countdown timer state
-            status: "idle",      // "idle" | "running" | "ended"
+            status: "idle", // "idle" | "running" | "ended"
 
             // timestamp when race started
             startedAt: null,
@@ -75,20 +78,18 @@ export function createInitialState() {
     };
 }
 
-
 /* Session object */
 const session = {
-  id: "s<count>",
+    id: "s<count>",
 
-  /* ARRAY of Driver objects */
-  drivers: [
-    {
-      name: "Alice",      // driver name
-      car: 1,             // car number (race identity)
-      laps: 0,            // completed laps
-      lastLapAt: null,    // last lap timestamp
-      fastestLap: null,   // fastest lap time in ms
-    },
-  ],
-}
-
+    /* ARRAY of Driver objects */
+    drivers: [
+        {
+            name: "Alice", // driver name
+            car: 1, // car number (race identity)
+            laps: 0, // completed laps
+            lastLapAt: null, // last lap timestamp
+            fastestLap: null, // fastest lap time in ms
+        },
+    ],
+};
