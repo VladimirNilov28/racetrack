@@ -10,6 +10,12 @@ export function raceRun(state, params) {
     if (!hasNextRace) {
         return endedSession;
     }
+    
+    // Toggle manual auto-start if enabled in state
+    const autoStartNext = endedSession.race?.autoStartNext ?? true;
+    if (!autoStartNext) {
+        return endedSession;
+    }
 
     // Use provided durationSec or fall back to previously stored duration
     const durationSec = params?.durationSec ?? state._lastRaceDuration;

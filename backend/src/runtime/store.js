@@ -106,7 +106,16 @@ export function dispatch(cmd) {
         case "cmd:lap:record":
             next = recordLap(next, payload?.car);
             break;
-
+        
+        case "cmd:race:auto-start:set":
+            next = {
+                ...next,
+                race: {
+                    ...next.race,
+                    autoStartNext: Boolean(payload?.enabled),
+                },
+            };
+            break;
         default:
             throw new Error(`Unknown command: ${type}`);
     }
