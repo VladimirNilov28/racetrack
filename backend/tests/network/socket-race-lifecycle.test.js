@@ -112,8 +112,7 @@ describe("network scenario: full socket lifecycle (2 races back-to-back)", () =>
         }
     });
 
-    it(
-        "runs 2 races via real sockets: sessions+drivers -> start -> laps -> timer ends -> next -> end",
+    it("runs 2 races via real sockets: sessions+drivers -> start -> laps -> timer ends -> next -> end",
         async () => {
             // --- 1) Start real HTTP + Socket.IO server on random port ---
             const httpServer = http.createServer();
@@ -156,6 +155,7 @@ describe("network scenario: full socket lifecycle (2 races back-to-back)", () =>
                 auth: { role: "front-desk", key: RECEPTIONIST_KEY ?? "admin" },
                 forceNew: true,
                 reconnection: false,
+                autoConnect: false,
             });
 
             const raceControl = ioc(url, {
@@ -181,6 +181,10 @@ describe("network scenario: full socket lifecycle (2 races back-to-back)", () =>
             const receptionistState = createStateTracker(receptionist);
             const raceControlState = createStateTracker(raceControl);
             const observerState = createStateTracker(observer);
+
+            receptionist.connect();
+            raceControl.connect();
+            observer.connect();
 
             opened.push(async () => {
                 receptionistState.stop();

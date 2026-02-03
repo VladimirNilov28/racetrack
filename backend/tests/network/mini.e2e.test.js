@@ -1,7 +1,11 @@
 import { describe, test, expect, afterEach, beforeEach } from "vitest";
 import { __resetForTests } from "../../src/runtime/store.js";
 import { EVENTS } from "../../src/sockets/events.js";
-import { RECEPTIONIST_KEY, SAFETY_KEY, OBSERVER_KEY } from "../../src/security/global-key-control.js";
+import {
+    RECEPTIONIST_KEY,
+    SAFETY_KEY,
+    OBSERVER_KEY,
+} from "../../src/security/global-key-control.js";
 
 import {
     createIoTestServer,
@@ -78,16 +82,20 @@ describe("network mini-tests (stable)", () => {
         await mustOk(
             emitCmd(receptionist.socket, EVENTS.CMD.SESSION_ADD, {
                 session: { id: sessionId, drivers: [driver(1)] },
-            })
+            }),
         );
 
         const seen = await waitForState(
             observer,
-            (s) => Array.isArray(s.sessions.upcoming) && s.sessions.upcoming.some((x) => x.id === sessionId),
-            2000
+            (s) =>
+                Array.isArray(s.sessions.upcoming) &&
+                s.sessions.upcoming.some((x) => x.id === sessionId),
+            2000,
         );
 
-        expect(seen.sessions.upcoming.some((x) => x.id === sessionId)).toBe(true);
+        expect(seen.sessions.upcoming.some((x) => x.id === sessionId)).toBe(
+            true,
+        );
     });
 
     test("B) race-control start -> current set + timer running", async () => {
@@ -104,19 +112,19 @@ describe("network mini-tests (stable)", () => {
         await mustOk(
             emitCmd(receptionist.socket, EVENTS.CMD.SESSION_ADD, {
                 session: { id: sessionId, drivers: [driver(1)] },
-            })
+            }),
         );
 
         await waitForState(
             observer,
             (s) => s.sessions.upcoming.some((x) => x.id === sessionId),
-            2000
+            2000,
         );
 
-        const durationSec = 3;
+        const durationSec = 60;
 
         await mustOk(
-            emitCmd(safety.socket, EVENTS.CMD.RACE_START, { durationSec })
+            emitCmd(safety.socket, EVENTS.CMD.RACE_START, { durationSec }),
         );
 
         const running = await waitForState(
@@ -126,7 +134,7 @@ describe("network mini-tests (stable)", () => {
                 s.timer.status === "running" &&
                 typeof s.timer.startedAt === "number" &&
                 typeof s.timer.endsAt === "number",
-            2000
+            2000,
         );
 
         expect(running.sessions.current.id).toBe(sessionId);
@@ -147,24 +155,26 @@ describe("network mini-tests (stable)", () => {
         await mustOk(
             emitCmd(receptionist.socket, EVENTS.CMD.SESSION_ADD, {
                 session: { id: "S1", drivers: [driver(1)] },
-            })
+            }),
         );
         await mustOk(
             emitCmd(receptionist.socket, EVENTS.CMD.SESSION_ADD, {
                 session: { id: "S2", drivers: [driver(2)] },
-            })
+            }),
         );
 
         await waitForState(
             observer,
-            (s) => s.sessions.upcoming.some((x) => x.id === "S1") && s.sessions.upcoming.some((x) => x.id === "S2"),
-            2000
+            (s) =>
+                s.sessions.upcoming.some((x) => x.id === "S1") &&
+                s.sessions.upcoming.some((x) => x.id === "S2"),
+            2000,
         );
 
         const durationSec = 1;
 
         await mustOk(
-            emitCmd(safety.socket, EVENTS.CMD.RACE_START, { durationSec })
+            emitCmd(safety.socket, EVENTS.CMD.RACE_START, { durationSec }),
         );
 
         const started = await waitForState(
@@ -173,7 +183,7 @@ describe("network mini-tests (stable)", () => {
                 s.sessions.current?.id === "S1" &&
                 s.timer.status === "running" &&
                 typeof s.timer.endsAt === "number",
-            2000
+            2000,
         );
 
         const endsAt = started.timer.endsAt;
@@ -184,7 +194,7 @@ describe("network mini-tests (stable)", () => {
         const finished = await waitForState(
             observer,
             (s) => s.sessions.lastResult?.id === "S1",
-            2000
+            2000,
         );
 
         expect(finished.sessions.lastResult.id).toBe("S1");
