@@ -70,7 +70,7 @@ body {
 
 /* ---- Connection badge ---- */
 .badge {
-  color: chartreuse;
+  color: #00ff8c;
   display: inline-flex;
   align-items: center;
   padding: 0.28rem 0.55rem;

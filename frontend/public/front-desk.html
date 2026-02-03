@@ -17,7 +17,7 @@
 
       <div class="status fd_status">
         <span class="muted">Connection:</span>
-        <strong data-fd="conn-status" class="badge badge_offline">Offline</strong>
+        <strong data-fd="conn-status" class="badge badge_offline" role="status" aria-live="polite">Offline</strong>
         <span class="fd_status_ticks" aria-hidden="true"></span>
       </div>
     </header>
@@ -73,7 +73,7 @@
             <button type="submit" class="btn btn_add">Add</button>
           </form>
 
-          <div class="muted fd_msg" data-fd="form-msg" role="status" aria-live="polite"></div>
+          <div class="muted fd_msg" data-fd="form-msg" role="status" aria-live="polite" aria-atomic="true"></div>
 
           <ul class="list list_slots" data-fd="driver-list" aria-label="Drivers for selected session">
             <li class="muted">No session selected</li>
@@ -102,7 +102,7 @@
           </div>
 
           <div class="row" style="margin-top: 0.9rem;">
-            </button>
+            <!-- Reserved for future controls -->
           </div>
         </article>
       </div>

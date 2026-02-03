@@ -9,6 +9,7 @@ const EVENTS = Object.freeze({
     SESSION_ADD: "cmd:session:add",
     SESSION_REMOVE: "cmd:session:remove",
     DRIVER_ADD: "cmd:driver:add",
+    DRIVER_UPDATE: "cmd:driver:update",
     DRIVER_REMOVE: "cmd:driver:remove",
   }),
   EVT: Object.freeze({
@@ -97,9 +98,14 @@ function ensureSelection() {
 
 // Session ID
 function makeNextSessionId() {
-  const upcoming = getUpcomingSessions(state);
+  // Check all sessions
+  const allSessions = [
+    ...getUpcomingSessions(state),
+    state?.sessions?.current,
+    state?.sessions?.lastResult,
+  ].filter(Boolean);
 
-  const nums = upcoming
+  const nums = allSessions
     .map((s) => String(s.id ?? ""))
     .map((id) => {
       const m = id.match(/^S(\d+)$/i);
@@ -173,13 +179,23 @@ function renderDetails() {
             <strong>Car ${escapeHtml(car)}</strong>
             <span class="muted">• ${escapeHtml(name)}</span>
           </div>
-          <button type="button"
-                  class="btn btn_danger btn_small"
-                  data-action="fd-remove-driver"
-                  data-session-id="${escapeHtml(sess.id)}"
-                  data-car="${escapeHtml(car)}">
-            Remove
-          </button>
+          <div class="slot_actions">
+            <button type="button"
+                    class="btn btn_small"
+                    data-action="fd-edit-driver"
+                    data-session-id="${escapeHtml(sess.id)}"
+                    data-car="${escapeHtml(car)}"
+                    data-name="${escapeHtml(name)}">
+              Edit
+            </button>
+            <button type="button"
+                    class="btn btn_danger btn_small"
+                    data-action="fd-remove-driver"
+                    data-session-id="${escapeHtml(sess.id)}"
+                    data-car="${escapeHtml(car)}">
+              Remove
+            </button>
+          </div>
         </li>
       `;
     })
@@ -189,7 +205,6 @@ function renderDetails() {
 function renderPreview() {
   if (!elPreview) return;
 
-  // 
   const next = getUpcomingSessions(state)[0] ?? null;
 
   if (!next) {
@@ -212,19 +227,44 @@ function renderPreview() {
     .join("");
 }
 
+function renderCarAvailability() {
+  if (!inputDriverCar) return;
+
+  const sess = ensureSelection();
+  const drivers = sess?.drivers ?? [];
+  const takenCars = new Set(drivers.map((d) => d.car));
+
+  // Update car select options - disable taken cars
+  Array.from(inputDriverCar.options).forEach((option) => {
+    const carNum = Number(option.value);
+    if (Number.isFinite(carNum)) {
+      if (takenCars.has(carNum)) {
+        option.disabled = true;
+        option.textContent = `Car ${carNum} (taken)`;
+      } else {
+        option.disabled = false;
+        option.textContent = `Car ${carNum}`;
+      }
+    }
+  });
+}
+
 function renderAll() {
   if (!state) return;
   renderSessions();
   renderDetails();
   renderPreview();
+  renderCarAvailability();
 }
 
 // ------------- UI -> socket commands -------------
 
+// SOCKET: cmd:session:add — Adds new session { id, drivers: [] }
 btnAddSession?.addEventListener("click", () => {
   setMsg("");
   const id = makeNextSessionId();
   socket.emit(EVENTS.CMD.SESSION_ADD, { id, drivers: [] });
+  setMsg(`Adding session ${id}...`, "is-info");
 });
 
 elSessionList?.addEventListener("click", (e) => {
@@ -243,17 +283,18 @@ elSessionList?.addEventListener("click", (e) => {
 });
 
 document.addEventListener("click", (e) => {
-  // Remove session
+  // SOCKET: cmd:session:remove — Removes session { id }
   const rmSess = e.target.closest('[data-action="fd-remove-session"]');
   if (rmSess) {
     const id = rmSess.getAttribute("data-session-id");
     if (!id) return;
     setMsg("");
     socket.emit(EVENTS.CMD.SESSION_REMOVE, { id });
+    setMsg(`Removing session ${id}...`, "is-info");
     return;
   }
 
-  // Remove driver 
+  // SOCKET: cmd:driver:remove — Removes driver { sessionId, car }
   const rmDriver = e.target.closest('[data-action="fd-remove-driver"]');
   if (rmDriver) {
     const sessionId = rmDriver.getAttribute("data-session-id");
@@ -263,6 +304,32 @@ document.addEventListener("click", (e) => {
     const car = Number.isFinite(Number(carAttr)) ? Number(carAttr) : carAttr;
     setMsg("");
     socket.emit(EVENTS.CMD.DRIVER_REMOVE, { sessionId, car });
+    setMsg(`Removing driver from car ${car}...`, "is-info");
+    return;
+  }
+
+  // SOCKET: cmd:driver:update — Updates driver name { sessionId, car, patch: { name } }
+  const editDriver = e.target.closest('[data-action="fd-edit-driver"]');
+  if (editDriver) {
+    const sessionId = editDriver.getAttribute("data-session-id");
+    const carAttr = editDriver.getAttribute("data-car");
+    const currentName = editDriver.getAttribute("data-name");
+    if (!sessionId || !carAttr) return;
+
+    const car = Number.isFinite(Number(carAttr)) ? Number(carAttr) : carAttr;
+    const newName = prompt("Edit driver name:", currentName);
+
+    if (newName === null) return; // cancelled edit
+    const trimmedName = newName.trim();
+    if (!trimmedName) {
+      setMsg("Driver name cannot be empty.", "is-error");
+      return;
+    }
+    if (trimmedName === currentName) return; // no change
+
+    setMsg("");
+    socket.emit(EVENTS.CMD.DRIVER_UPDATE, { sessionId, car, patch: { name: trimmedName } });
+    setMsg(`Updating driver to "${trimmedName}"...`, "is-info");
   }
 });
 
@@ -282,17 +349,36 @@ formAddDriver?.addEventListener("submit", (e) => {
     return;
   }
 
-  // 
   const carNum = Number(inputDriverCar?.value);
   if (!Number.isFinite(carNum) || carNum < 1) {
     setMsg("Select a car number.", "is-error");
     return;
   }
 
+  // Validate: Check for duplicate driver names in this session
+  const drivers = Array.isArray(sess.drivers) ? sess.drivers : [];
+  const duplicateName = drivers.some(
+    (d) => String(d.name).trim().toLowerCase() === name.toLowerCase()
+  );
+  if (duplicateName) {
+    setMsg(`Driver "${name}" is already in this session.`, "is-error");
+    return;
+  }
+
+  // Validate: Check if car is already taken in this session
+  const carTaken = drivers.some((d) => d.car === carNum);
+  if (carTaken) {
+    setMsg(`Car ${carNum} is already taken in this session.`, "is-error");
+    return;
+  }
+
+  // SOCKET: cmd:driver:add — Adds driver { sessionId, driver: { name, car } }
   socket.emit(EVENTS.CMD.DRIVER_ADD, {
     sessionId: sess.id,
     driver: { name, car: carNum },
   });
+
+  setMsg(`Adding ${name} to car ${carNum}...`, "is-info");
 
   // Clear inputs
   if (inputDriverName) inputDriverName.value = "";
@@ -300,6 +386,8 @@ formAddDriver?.addEventListener("submit", (e) => {
 });
 
 // ------------- socket -> UI -------------
+// SOCKET: evt:state:update 
+// SOCKET: evt:cmd:rejected 
 
 socket.on("connect", () => {
   setConn(true);
@@ -319,6 +407,26 @@ socket.on(EVENTS.EVT.STATE_UPDATE, (snapshot) => {
 
 socket.on(EVENTS.EVT.CMD_REJECTED, ({ reason } = {}) => {
   setMsg(reason || "Command rejected.", "is-error");
+});
+
+// ------------- Keyboard shortcuts -------------
+
+document.addEventListener("keydown", (e) => {
+  // Escape: deselect session
+  if (e.key === "Escape") {
+    if (selectedSessionId) {
+      selectedSessionId = null;
+      setMsg("");
+      renderAll();
+      e.preventDefault();
+    }
+  }
+
+  // Ctrl/Cmd + N: Add new session
+  if ((e.ctrlKey || e.metaKey) && e.key === "n") {
+    e.preventDefault();
+    btnAddSession?.click();
+  }
 });
 
 // Initial
