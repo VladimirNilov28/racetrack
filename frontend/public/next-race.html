@@ -9,26 +9,31 @@
         <text y='.9em' font-size='90'>⏭️</text></svg>"/>
 </head>
 <body>
-    <main class="pub-page">
-        <header class="pub-header">
-            <h1 class="pub-title">Next Race</h1>
-        </header>
+<main class="pub-page">
+    <header class="pub-header">
+        <div class="pub-header-center">
+            <h1 class="pub-title">[H] Next Race</h1>
+            <div class="pub-session" data-nr="session-info">
+                <span class="pub-session-label">[H] Upcoming Session:</span>
+                <span class="pub-session-id">[H] ---</span>
+            </div>
+        </div>
+    </header>
 
-        <section class="pub-content" data-nr="content">
-            <p class="pub-idle">Waiting for session data...</p>
-        </section>
+    <section class="pub-content" data-nr="content">
+        <p class="pub-idle">[H] Waiting for session data...</p>
+    </section>
 
-        <footer class="pub-footer">
-            <span data-nr="pub-status" class="pub-conn pub-conn-offline">Offline...</span>
-        </footer>
-    </main>
+    <footer class="pub-footer">
+        <span data-nr="pub-status" class="pub-conn pub-conn-offline">[H] Offline...</span>
+        <button id="pub-fullscreen" class="btn-fullscreen">
+            <span>⛶</span>
+        </button>
+    </footer>
+</main>
 
-    <button id="pub-fullscreen" class="btn-fullscreen">
-        <span>⛶</span>
-    </button>
-
-    <script type="module" src="/socket.io/socket.io.js"></script>
-    <script type="module" src="../js/main.js"></script>
-    <script type="module" src="../js/next-race.js"></script>
+<script type="module" src="/socket.io/socket.io.js"></script>
+<script type="module" src="../js/main.js"></script>
+<script type="module" src="../js/next-race.js"></script>
 </body>
 </html>

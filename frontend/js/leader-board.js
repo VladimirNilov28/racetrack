@@ -5,8 +5,8 @@ const elSessionId = document.querySelector(`[data-lb="session-info"] .pub-sessio
 const elTimerDisplay = document.querySelector(`[data-lb="timer-display"] .pub-flag-timer`);
 const elFlagMode = document.querySelector(`[data-lb="flag-mode"]`);
 const elContent = document.querySelector(`[data-lb="content"]`);
-const elFullscreen = document.getElementById("pub-fullscreen");
 const elConn = document.querySelector(`[data-lb="pub-status"]`);
+const elFullscreen = document.getElementById("pub-fullscreen");
 
 let state = null;
 
@@ -239,11 +239,12 @@ function stopLocalTicker() {
 
 // main event
 socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
-  console.log("Drivers:", snapshot?.sessions?.current?.drivers?.map(d => ({
+  console.log("Drivers:", snapshot?.sessions?.current?.drivers?.map(d => ({ // DEBUG
     car: d.car,
     laps: d.laps,
     fastestLap: d.fastestLap,
   })));
+
   state = snapshot;
   renderLeaderboard();
 

@@ -315,7 +315,7 @@ body {
     font-size: 3.5vh;
 }
 
-.pub-col-name { /* TEST: added line truncation */
+.pub-col-name { /* TEST: text overflow truncation */
     width: auto;
     text-align: left;
     white-space: nowrap;
@@ -329,8 +329,6 @@ body {
     width: 18%;
     text-align: center;
     font-size: 3.5vh;
-
-    /* font-family: monospace; fixed-width for better scaling */
 }
 
 .pub-col-laps {
@@ -355,7 +353,7 @@ body {
     font-size: 3vh;
 }
 
-/* position styling for drivers without laps */
+/* position styling for drivers with no laps completed */
 .pub-position-none {
     color: var(--nr-muted);
 }
@@ -446,10 +444,10 @@ body {
 .btn-fullscreen {
     position: fixed;
     bottom: 1rem;
-    right: 4rem;
-    width: 8vh;
-    height: 8vh;
-    font-size: 4vh;
+    right: 1rem;
+    width: 12vh;
+    height: 12vh;
+    font-size: 6vh;
     border: none;
     border-radius: 8px;
     background: rgb(0 0 0 / 50%);
