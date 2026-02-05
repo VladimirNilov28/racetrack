@@ -1,3 +1,5 @@
+// src/service/lap-record.js
+
 export function recordLap(state, car) {
     const now = Date.now();
     const session = state.sessions.current;
@@ -6,36 +8,42 @@ export function recordLap(state, car) {
         throw new Error("No active session");
     }
 
-    
-    if (state.race.mode.value === "finish" && state.timer.status === "ended") throw new Error("Lap can't be recorded. It is alredy finished")
-    if (state.timer.status !== "running") throw new Error("Lap is no active - it can not be recorded")
-    // Check driver existence by car number (domain rule)
-    const driverExists = session.drivers.some(d => d.car === car);
-    if (!driverExists) {
-        throw new Error(`Car ${car} does not exist in current session`);
+    if (car === undefined || car === null) {
+        throw new Error("Car is required");
     }
 
     if (state.timer.status === "idle") {
         throw new Error("Session is not started");
     }
 
+    if (state.timer.status === "idle") {
+        throw new Error("Session is not started");
+    }
+
+    if (state.timer.status === "ended" && state.race.mode.value === "finish") {
+        throw new Error("Lap can't be recorded. Race is finished");
+    }
+
+    const driverExists = session.drivers.some((d) => d.car === car);
+    if (!driverExists) {
+        throw new Error(`Car ${car} does not exist in current session`);
+    }
+
+    const startedAt = state.timer.startedAt;
+    if (startedAt === null) {
+        throw new Error("Timer startedAt is missing");
+    }
+
     const updatedDrivers = session.drivers.map((driver) => {
         if (driver.car !== car) return driver;
 
-        // We check if it's the first lap
-        const isFirstLap = driver.lastLapAt === null;
+        const baseline = driver.lastLapAt ?? startedAt;
+        const lapTime = now - baseline;
 
-        // If it's the first lap, we can't calculate lap time yet,
-        // so we set lapTime to null
-        const lapTime = isFirstLap ? null : now - driver.lastLapAt;
-
-        // We calculate the next fastest lap time
         const nextFastestLap =
-            lapTime === null
-                ? driver.fastestLap
-                : driver.fastestLap === null
-                    ? lapTime
-                    : Math.min(driver.fastestLap, lapTime);
+            driver.fastestLap === null
+                ? lapTime
+                : Math.min(driver.fastestLap, lapTime);
 
         return {
             ...driver,
@@ -47,6 +55,10 @@ export function recordLap(state, car) {
 
     return {
         ...state,
+        meta: {
+            ...state.meta,
+            updatedAt: now,
+        },
         sessions: {
             ...state.sessions,
             current: {
