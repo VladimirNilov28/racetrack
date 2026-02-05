@@ -11,10 +11,13 @@
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
     background-color: var(--nr-bg);
     color: var(--nr-text);
     font-family: sans-serif;
+}
+
+.pub-body {
+    min-height: 100vh;
     overflow: hidden;
 }
 
@@ -69,7 +72,7 @@ body {
     box-sizing: border-box;
 }
 
-/* HEADER STYLES */
+/* HEADER STYLES for NR, LB and CD */
 .pub-header {
     display: flex;
     justify-content: space-between;
@@ -108,7 +111,7 @@ body {
     line-height: 1;
 }
 
-/* header boxes */
+/* HEADER BOXES FOR N-R AND L-B */
 .pub-flag-label {
     font-size: 3vh;
     color: var(--nr-muted);
@@ -118,8 +121,8 @@ body {
 }
 
 .pub-flag-box {
-    width: 8vw;
-    height: 6vw;
+    width: 12vw;
+    height: 9vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,7 +132,18 @@ body {
     border-radius: 4px;
 }
 
-/* flag mode colors */
+/* timer box; dimmed when not running */
+.pub-flag-timer {
+    background: rgb(255 255 255 / 10%);
+    color: var(--nr-text);
+    font-family: monospace;
+}
+
+.pub-flag-timer.pub-flag-hidden {
+    opacity: 0.3;
+}
+
+/* flag mode colors for RF and LB */
 .pub-flag-mode {
     text-transform: uppercase;
     font-size: 2vw;
@@ -158,23 +172,24 @@ body {
             black 180deg 270deg,
             white 270deg
     );
-    background-size: 50px 50px;
+    background-size: 15vw 15vw;
     background-attachment: fixed;
     color: black;
 }
 
-/* timer box; dimmed when not running */
-.pub-flag-timer {
-    background: rgb(255 255 255 / 10%);
-    color: var(--nr-text);
-    font-family: monospace;
+/* RACE-FLAGS SPECIFIC */
+.pub-flag-fullscreen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20vh;
+    font-weight: bold;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-.pub-flag-timer.pub-flag-hidden {
-    opacity: 0.3;
-}
-
-/* session info */
+/* SESSION INFO for race-countdown, leader-board and next-race */
 .pub-session {
     text-align: center;
     white-space: nowrap;
@@ -204,7 +219,56 @@ body {
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    overflow: hidden; /* to prevent internal scrolling */
+    overflow: hidden;
+}
+
+/* pub-content for states with no content */
+
+/* error/disconnected state */
+.pub-error {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.pub-error-icon {
+    font-size: 25vh;
+    margin: 0 0 2vh;
+}
+
+.pub-error-text {
+    font-size: 10vh;
+    font-weight: 700;
+    color: var(--nr-error);
+    margin: 0 0 1vh;
+}
+
+.pub-error-sub {
+    font-size: 5vh;
+    color: var(--nr-muted);
+    margin: 0;
+}
+
+/* idle/no data state */
+.pub-idle {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.pub-idle-icon {
+    font-size: 25vh;
+    margin: 0 0 2vh;
+}
+
+.pub-idle-text {
+    font-size: 10vh;
+    font-weight: 700;
+    margin: 0 0 1vh;
+}
+
+.pub-idle-sub {
+    font-size: 5vh;
+    color: var(--nr-muted);
+    margin: 0;
 }
 
 /* TABLE FOR LISTING DRIVERS */
@@ -215,8 +279,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    font-size: 3vh;
+    width: 80%;
+    height: 60%;
+    font-size: 10vh;
     text-align: center;
     color: var(--nr-muted);
     font-style: italic;
@@ -228,7 +293,7 @@ body {
 
 /* populated driver list */
 .pub-drivers-list {
-    width: 100%;
+    width: 80%;
     flex: 1;
     table-layout: fixed;
     border-collapse: collapse;
@@ -315,7 +380,7 @@ body {
     font-size: 3.5vh;
 }
 
-.pub-col-name { /* TEST: added line truncation */
+.pub-col-name {
     width: auto;
     text-align: left;
     white-space: nowrap;
@@ -329,8 +394,6 @@ body {
     width: 18%;
     text-align: center;
     font-size: 3.5vh;
-
-    /* font-family: monospace; fixed-width for better scaling */
 }
 
 .pub-col-laps {
@@ -355,56 +418,32 @@ body {
     font-size: 3vh;
 }
 
-/* position styling for drivers without laps */
+/* position styling for drivers with no laps completed */
 .pub-position-none {
     color: var(--nr-muted);
 }
 
-/* idle/no data state */
-.pub-idle {
-    text-align: center;
-    margin-top: 10vh;
+/* countdown-display-specific */
+.countdown-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }
 
-.pub-idle-icon {
-    font-size: 25vh;
-    margin: 0 0 2vh;
+.countdown-timer {
+    font-size: 30vh;
+    font-weight: bold;
+    font-family: monospace;
+    color:  var(--nr-accent);
 }
 
-.pub-idle-text {
-    font-size: 10vh;
-    font-weight: 700;
-    margin: 0 0 1vh;
-}
-
-.pub-idle-sub {
-    font-size: 5vh;
-    color: var(--nr-muted);
-    margin: 0;
-}
-
-/* error/disconnected state */
-.pub-error {
-    text-align: center;
-    margin-top: 10vh;
-}
-
-.pub-error-icon {
-    font-size: 25vh;
-    margin: 0 0 2vh;
-}
-
-.pub-error-text {
-    font-size: 10vh;
-    font-weight: 700;
-    color: var(--nr-error);
-    margin: 0 0 1vh;
-}
-
-.pub-error-sub {
-    font-size: 5vh;
-    color: var(--nr-muted);
-    margin: 0;
+.countdown-label {
+    font-size: 6vh;
+    color:  var(--nr-muted);
+    text-transform: uppercase;
+    margin-top: 2vh;
 }
 
 /* FOOTER */
@@ -413,7 +452,7 @@ body {
     height: 0;
 }
 
-/* PUBLIC SCREENS: ONLINE/OFFLINE STATUS INDICATOR */
+/* PUBLIC SCREENS: online/offline status indicator */
 .pub-status {
     text-align: center;
     padding-top: 1rem;
@@ -442,14 +481,14 @@ body {
     background: rgb(0 255 140 / 20%);
 }
 
-/* PUBLIC SCREENS: FULLSCREEN BUTTON */
+/* PUBLIC SCREENS: fullscreen button */
 .btn-fullscreen {
     position: fixed;
     bottom: 1rem;
-    right: 4rem;
-    width: 8vh;
-    height: 8vh;
-    font-size: 4vh;
+    right: 1rem;
+    width: 12vh;
+    height: 12vh;
+    font-size: 6vh;
     border: none;
     border-radius: 8px;
     background: rgb(0 0 0 / 50%);
@@ -470,7 +509,7 @@ body {
     outline: 2px solid white;
 }
 
-/* FRONTEND DEBUG: PING BUTTON */
+/* FRONTEND DEBUG: ping button */
 .btn-ping {
     z-index: 20;
 }

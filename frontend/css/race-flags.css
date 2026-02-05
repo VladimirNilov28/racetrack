@@ -9,6 +9,7 @@ body {
 }
 
 /* this is the flag */
+
 #flag-display {
     width: 100%;
     height: 100%;
@@ -56,6 +57,7 @@ body {
 }
 
 /* fullscreen implementation v2 */
+
 .btn-fullscreen {
     position: fixed;
     bottom: 1rem;
@@ -70,11 +72,11 @@ body {
     cursor: pointer;
     opacity: 0.6;
     transition: opacity 0.2s ease;
-    z-index: 10; /* pushes layer on top */
-    touch-action: manipulation; /* touch/safari compat fix */
+    z-index: 10;
+    touch-action: manipulation;
 }
 
-.btn-fullscreen:hover, /* touch/safari compat fix */
+.btn-fullscreen:hover,
 .btn-fullscreen:active {
     opacity: 1;
 }

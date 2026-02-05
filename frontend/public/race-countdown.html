@@ -9,12 +9,27 @@
         <text y='.9em' font-size='90'>⏱️</text></svg>"/>
 </head>
 <body>
-    <div id="timer">--:--</div>
-    <button id="ping-btn">
-        <span>PING</span>
-    </button>
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="../js/main.js"></script>
-    <script type="module" src="../js/race-countdown.js"></script>
+<main class="pub-page">
+    <header class="pub-header">
+        <div class="pub-header-center">
+            <h1 class="pub-title">Race Countdown</h1>
+            <div class="pub-session" data-cd="session-info">
+                <span class="pub-session-label">Current Session:</span>
+                <span class="pub-session-id">No active session</span>
+            </div>
+        </div>
+    </header>
+    <section class="pub-content" data-cd="content">
+    </section>
+    <footer class="pub-footer">
+        <span data-cd="pub-status" class="pub-conn pub-conn-offline">Offline...</span>
+        <button id="pub-fullscreen" class="btn-fullscreen">
+            <span>⛶</span>
+        </button>
+    </footer>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script type="module" src="../js/main.js"></script>
+<script type="module" src="../js/race-countdown.js"></script>
 </body>
 </html>

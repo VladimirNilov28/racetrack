@@ -1,18 +1,20 @@
 import socket from "./socket.js";
+// import { setConn, setupFullscreenToggle } from "./helpers/dom-helpers.js";
+// import { getRemainingTime, formatTimer, createLocalTicker } from "./helpers/timer-helpers.js";
+import {EVENTS} from "./helpers/constants.js";
 
-// elements shall be defined here
+const elSessionLabel = document.querySelector(`[data-nr="session-info"] .pub-session-label`);
+const elSessionId = document.querySelector(`[data-nr="session-info"] .pub-session-id`);
 const elContent = document.querySelector(`[data-nr="content"]`);
 const elConn = document.querySelector(`[data-nr="pub-status"]`);
 const elFullscreen = document.getElementById("pub-fullscreen");
 
 let state = null;
 
-const EVENTS = Object.freeze({
+/* const EVENTS = Object.freeze({
   STATE_UPDATE: "evt:state:update",
-});
+}); */
 
-/* helper functions */
-// connection indicator
 function setConn(online) {
   if (!elConn) return;
   elConn.textContent = online ? "online" : "offline";
@@ -20,25 +22,36 @@ function setConn(online) {
   elConn.classList.toggle("pub-conn-online", online);
 }
 
-// very basic XSS protection:
-// Rule: Always escape untrusted data before inserting it into HTML via innerHTML.
 function escapeHtml(str) {
   return String(str).
-      replace(/&/g, "&amp;").
-      replace(/</g, "&lt;").
-      replace(/>/g, "&gt;").
-      replace(/"/g, "&quot;").
-      replace(/'/g, "&#39;");
+    replace(/&/g, "&amp;").
+    replace(/</g, "&lt;").
+    replace(/>/g, "&gt;").
+    replace(/"/g, "&quot;").
+    replace(/'/g, "&#39;");
 }
 
-function getUpcomingSessions(s) {
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing
+function getUpcomingSession(s) {
   return s?.sessions?.upcoming ?? [];
 }
 
 // main render function
 function renderNextRace() {
   if (!elContent) return;
+
+  const upcomingSession = getUpcomingSession(state);
+  const next = upcomingSession[0] ?? null;
+
+  const {session, label} = getUpcomingSession(state);
+  if (elSessionLabel && elSessionId) {
+    if (session) {
+      elSessionLabel.textContent = `Hi! ${label}:`;
+      elSessionId.textContent = session.id ?? "Ho! ---";
+    } else {
+      elSessionLabel.textContent = "No upcoming session.";
+      elSessionId.textContent = "";
+    }
+  }
 
   // handling disconnected state
   if (!socket.connected) {
@@ -51,9 +64,6 @@ function renderNextRace() {
         `;
     return;
   }
-
-  const upcomingSession = getUpcomingSessions(state);
-  const next = upcomingSession[0] ?? null;
 
   // no upcoming sessions
   if (!next) {
@@ -75,26 +85,27 @@ function renderNextRace() {
   drivers.sort((a, b) => a.car - b.car);
 
   // render driver/car list
-  let driversHtml;
+  let nextRaceHtml;
   /* cases for sessions both without and with drivers assigned */
   if (drivers.length === 0) {
-    driversHtml = `<li class="pub-driver pub-drivers-list-empty">No racer data... Yet.</li>`;
+    nextRaceHtml = `<li class="pub-driver pub-drivers-list-empty">No racer data... Yet.</li>`;
   } else {
-    driversHtml = drivers.map((d) => `
-            <li class="pub-driver">
-                <span class="pub-car">Car ${escapeHtml(d.car ?? "?")}</span>
-                <span class="pub-driver-name">${escapeHtml(d.name ?? "Unknown")}</span>
-            </li>`).join("");
+    nextRaceHtml = drivers.map((d) => `
+      <li class="pub-driver">
+          <span class="pub-car">Car ${escapeHtml(d.car ?? "?")}</span>
+          <span class="pub-driver-name">${escapeHtml(d.name ?? "Unknown")}</span>
+      </li>`).join("");
+
+    nextRaceHtml = `
+      <div class="pub-session">
+          <span class="pub-session-label">Session</span>
+          <span class="pub-session-id">${escapeHtml(sessionId)}</span>
+      </div>
+      <ul class="pub-drivers-list">${nextRaceHtml}</ul>
+    `
   }
 
-  /* mash everything together */
-  elContent.innerHTML = `
-        <li class="pub-session">
-            <span class="pub-session-label">Session:</span>
-            <span class="pub-session-id">${escapeHtml(sessionId)}</span>
-        </li>
-        <ul class="pub-drivers-list">${driversHtml}</ul>
-    `;
+  elContent.innerHTML = nextRaceHtml;
 }
 
 // sockets events
@@ -126,5 +137,4 @@ elFullscreen?.addEventListener("click", () => {
   }
 });
 
-// render init
 renderNextRace();

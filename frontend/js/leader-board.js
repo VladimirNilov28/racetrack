@@ -1,20 +1,20 @@
 import socket from "./socket.js";
+import {EVENTS} from "./helpers/constants.js";
 
 const elSessionLabel = document.querySelector(`[data-lb="session-info"] .pub-session-label`);
 const elSessionId = document.querySelector(`[data-lb="session-info"] .pub-session-id`);
 const elTimerDisplay = document.querySelector(`[data-lb="timer-display"] .pub-flag-timer`);
 const elFlagMode = document.querySelector(`[data-lb="flag-mode"]`);
 const elContent = document.querySelector(`[data-lb="content"]`);
-const elFullscreen = document.getElementById("pub-fullscreen");
 const elConn = document.querySelector(`[data-lb="pub-status"]`);
+const elFullscreen = document.getElementById("pub-fullscreen");
 
 let state = null;
 
-const EVENTS = Object.freeze({
+/* const EVENTS = Object.freeze({
   STATE_UPDATE: "evt:state:update",
-});
+}); */
 
-/* helper functions */
 function setConn(online) {
   if (!elConn) return;
   elConn.textContent = online ? "online" : "offline";
@@ -110,9 +110,9 @@ function renderLeaderboard() {
     elTimerDisplay.classList.toggle("pub-flag-hidden", !isCurrentRace);
   }
 
-  const raceMode = state?.race?.mode?.value ?? "safe";
+  const raceMode = state?.race?.mode?.value ?? "danger";
   if (elFlagMode) {
-    elFlagMode.textContent = raceMode.toUpperCase();
+    // elFlagMode.textContent = raceMode.toUpperCase();
     elFlagMode.setAttribute("data-mode", raceMode);
   }
 
@@ -144,7 +144,7 @@ function renderLeaderboard() {
   if (!session) {
     elContent.innerHTML = `
         <div class="pub-idle">
-            <p class="pub-idle-icon">🏁</p>
+            <p class="pub-idle-icon">🙈</p>
             <p class="pub-idle-text">No races yet</p>
             <p class="pub-idle-sub">Waiting for first race to start...</p>
         </div>
@@ -239,11 +239,12 @@ function stopLocalTicker() {
 
 // main event
 socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
-  console.log("Drivers:", snapshot?.sessions?.current?.drivers?.map(d => ({
+  console.log("Drivers:", snapshot?.sessions?.current?.drivers?.map(d => ({ // DEBUG
     car: d.car,
     laps: d.laps,
     fastestLap: d.fastestLap,
   })));
+
   state = snapshot;
   renderLeaderboard();
 
