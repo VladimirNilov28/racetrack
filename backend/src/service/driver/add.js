@@ -10,6 +10,8 @@ export function addDriver(state, sessionId, driverInput) {
     if (driverInput.car === undefined || driverInput.car === null) {
         throw new Error("Driver car is required");
     }
+    
+    
 
     const now = Date.now();
 
@@ -31,6 +33,10 @@ export function addDriver(state, sessionId, driverInput) {
     }
 
     const targetSession = isCurrentTarget ? current : upcomingTarget;
+    const nameExist = targetSession.drivers.some(d => d.name === newDriver.name);
+    if (nameExist) {
+        throw new Error(`Driver name already exists in session: ${newDriver.name}`);
+    }
     const carExist = targetSession.drivers.some(d => d.car === newDriver.car);
     if (carExist) {
         throw new Error(`Car already exist in session: ${newDriver.car}`);
