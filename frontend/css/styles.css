@@ -380,7 +380,7 @@ body {
     font-size: 3.5vh;
 }
 
-.pub-col-name {
+.pub-col-name { /* TEST: text overflow truncation */
     width: auto;
     text-align: left;
     white-space: nowrap;
@@ -394,6 +394,8 @@ body {
     width: 18%;
     text-align: center;
     font-size: 3.5vh;
+
+    /* font-family: monospace; fixed-width for better scaling */
 }
 
 .pub-col-laps {
