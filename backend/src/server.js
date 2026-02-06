@@ -12,6 +12,13 @@ import { fileURLToPath } from "node:url";
 import logger from "./logger.js";
 import wildcard from "socketio-wildcard";
 import { startTicker } from "./runtime/ticker.js";
+import { dbInit, dbClose } from "./config/database.js"
+import {
+  __unsafeReplaceStateForBoot,
+  reduceByTime,
+  subscribe,
+  getState,
+} from "./runtime/store.js";
 
 // CLI
 const cli = parseCli(process.argv);
@@ -22,6 +29,16 @@ if (cli.help) {
 
 // env / security
 if (!cli.noKeycheck) keyCheck();
+
+// ---- DB: init + restore snapshot (BOOT only) ----
+await dbInit({ filename: env.SQLITE_FILE ?? "backend/db.sqlite" });
+
+const restored = await loadState();
+if (restored) {
+  __unsafeReplaceStateForBoot(restored);
+  // Catch up timers/orchestration after downtime
+  reduceByTime(Date.now());
+}
 
 const PORT = env.PORT || 8080;
 const HOST = env.HOST || "0.0.0.0";
@@ -52,7 +69,27 @@ registerPages(app);
 keyAuthentication(io);
 socketConnect(io);
 
+// ---- DB: persist snapshots on every state change ----
+const unsubscribePersist = subscribe((next) => {
+  // IMPORTANT: do not await here (real-time)
+  saveState(next).catch((e) => {
+    logger.error("db:save:fail", { msg: e?.message });
+  });
+});
+
 startTicker({ intervalMs: 250 });
+
+process.on("SIGINT", async () => {
+  logger.info("server:shutdown");
+  try {
+    unsubscribePersist?.();
+    // Final best-effort save
+    await saveState(getState()).catch(() => {});
+    await dbClose().catch(() => {});
+  } finally {
+    process.exit(0);
+  }
+});
 
 server.listen(PORT, HOST);
 logger.info("server:start", {

@@ -1,7 +1,7 @@
 import { createInitialState } from "../service/state-init.js";
 import logger from "../logger.js";
 
-import { env } from "node:process"
+import { env } from "node:process";
 
 import { startRace } from "../service/race/start.js";
 import { finishRace } from "../service/race/finish.js";
@@ -55,13 +55,11 @@ export function dispatch(cmd) {
 
     let next = state;
 
-
-
     switch (type) {
         // --- RACE (Safety / Race Control) ---
         case "cmd:race:start":
-          next = startRace(next, payload?.durationSec ?? RACE_DURATION_SEC);
-          break
+            next = startRace(next, payload?.durationSec ?? RACE_DURATION_SEC);
+            break;
 
         case "cmd:race:set-mode":
             next = setRaceMode(next, payload?.mode);
@@ -94,7 +92,12 @@ export function dispatch(cmd) {
 
         case "cmd:driver:update":
             // payload: { sessionId, car, patch }
-            next = editDriver(next, payload?.sessionId, payload?.car, payload?.patch);
+            next = editDriver(
+                next,
+                payload?.sessionId,
+                payload?.car,
+                payload?.patch,
+            );
             break;
 
         case "cmd:driver:remove":
@@ -106,7 +109,7 @@ export function dispatch(cmd) {
         case "cmd:lap:record":
             next = recordLap(next, payload?.car);
             break;
-        
+
         case "cmd:race:auto-start:set":
             next = {
                 ...next,
@@ -167,6 +170,14 @@ export function reduceByTime(now = Date.now()) {
 export function __resetForTests(seed = null) {
     state = seed ?? createInitialState();
     listeners.clear(); // IMPORTANT: prevents leftover subscriptions between tests
-    logger.info("state:reset", { environment: process.env.NODE_ENV ?? "unknown" });
+    logger.info("state:reset", {
+        environment: process.env.NODE_ENV ?? "unknown",
+    });
+    return state;
+}
+
+export function __unsafeReplaceStateForBoot(restored) {
+    state = restored ?? createInitialState();
+    logger.info("state:restored", { restored: Boolean(restored) });
     return state;
 }

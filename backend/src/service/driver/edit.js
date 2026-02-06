@@ -1,6 +1,7 @@
 export function editDriver(state, sessionId, carNumber, patch) {
     if (!sessionId) throw new Error("Session id is required");
-    if (carNumber === null || carNumber === undefined) throw new Error("Car number is required");
+    if (carNumber === null || carNumber === undefined)
+        throw new Error("Car number is required");
 
     if (!patch || Object.keys(patch).length === 0) {
         throw new Error("Patch must contain at least one field");
@@ -22,7 +23,10 @@ export function editDriver(state, sessionId, carNumber, patch) {
         throw new Error("Driver car is required");
     }
 
-    if (state.sessions.lastResult && state.sessions.lastResult.id === sessionId) {
+    if (
+        state.sessions.lastResult &&
+        state.sessions.lastResult.id === sessionId
+    ) {
         throw new Error("Editing lastResult is not allowed");
     }
 
@@ -31,7 +35,9 @@ export function editDriver(state, sessionId, carNumber, patch) {
     const current = state.sessions.current;
     const isCurrentTarget = current !== null && current.id === sessionId;
 
-    const upcomingTarget = state.sessions.upcoming.find(s => s.id === sessionId);
+    const upcomingTarget = state.sessions.upcoming.find(
+        (s) => s.id === sessionId,
+    );
     const isUpcomingTarget = Boolean(upcomingTarget);
 
     if (!isCurrentTarget && !isUpcomingTarget) {
@@ -40,14 +46,19 @@ export function editDriver(state, sessionId, carNumber, patch) {
 
     const targetSession = isCurrentTarget ? current : upcomingTarget;
 
-    const driverExists = targetSession.drivers.some(d => d.car === carNumber);
+    const nameExist = targetSession.drivers.some((d) => d.name === patch.name);
+    if (nameExist) {
+        throw new Error(`Driver name already exists in session: ${patch.name}`);
+    }
+
+    const driverExists = targetSession.drivers.some((d) => d.car === carNumber);
     if (!driverExists) {
         throw new Error(`Driver not found: car ${carNumber}`);
     }
 
     // If car is changing, enforce uniqueness inside the same session
     if ("car" in patch && patch.car !== carNumber) {
-        const carTaken = targetSession.drivers.some(d => d.car === patch.car);
+        const carTaken = targetSession.drivers.some((d) => d.car === patch.car);
         if (carTaken) {
             throw new Error(`Car already exists in session: ${patch.car}`);
         }
@@ -63,7 +74,7 @@ export function editDriver(state, sessionId, carNumber, patch) {
         };
     };
 
-    const updatedUpcoming = state.sessions.upcoming.map(session => {
+    const updatedUpcoming = state.sessions.upcoming.map((session) => {
         if (session.id !== sessionId) return session;
 
         return {
@@ -74,9 +85,9 @@ export function editDriver(state, sessionId, carNumber, patch) {
 
     const updatedCurrent = isCurrentTarget
         ? {
-            ...current,
-            drivers: current.drivers.map(patchDriver),
-        }
+              ...current,
+              drivers: current.drivers.map(patchDriver),
+          }
         : current;
 
     return {
