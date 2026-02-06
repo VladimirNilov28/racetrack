@@ -35,6 +35,7 @@ const btnSync = document.querySelector('[data-action="rc-sync"]');
 const modeButtons = Array.from(document.querySelectorAll('[data-action="rc-set-mode"]'));
 
 let state = null;
+let timerIntervalId = null;
 
 // ---------- helpers ----------
 function setConn(online) {
@@ -135,20 +136,31 @@ function render() {
 
   // UX rule: once finish, disable mode buttons
   const isFinish = String(mode).toLowerCase() === "finish";
-  modeButtons.forEach((btn) => (btn.disabled = isFinish));
+  modeButtons.forEach((btn) => {
+    btn.disabled = isFinish;
+    if (isFinish) {
+      btn.setAttribute("aria-disabled", "true");
+    } else {
+      btn.removeAttribute("aria-disabled");
+    }
+  });
 }
 
 // ---------- actions -> commands ----------
+
+// SOCKET: cmd:race:start — Starts race
 btnStart?.addEventListener("click", () => {
   setMsg("");
   socket.emit(EVENTS.CMD.RACE_START, {});
 });
 
+// SOCKET: cmd:race:finish — Finishes the race 
 btnFinish?.addEventListener("click", () => {
   setMsg("");
   socket.emit(EVENTS.CMD.RACE_FINISH, {});
 });
 
+// SOCKET: cmd:session:end — Ends current session 
 btnEndSession?.addEventListener("click", () => {
   setMsg("");
   socket.emit(EVENTS.CMD.SESSION_END, {});
@@ -158,6 +170,7 @@ btnSync?.addEventListener("click", () => {
   setMsg("Waiting for state update…", "is-info");
 });
 
+// SOCKET: cmd:race:set-mode — Sets race flag 
 modeButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
     setMsg("");
@@ -168,13 +181,16 @@ modeButtons.forEach((btn) => {
 });
 
 // ---------- socket -> UI ----------
+
 socket.on("connect", () => {
   setConn(true);
   setLastUpdateNow();
+  startTimerTick();
 });
 
 socket.on("disconnect", () => {
   setConn(false);
+  stopTimerTick();
 });
 
 socket.on(EVENTS.EVT.STATE_UPDATE, (snapshot) => {
@@ -188,5 +204,23 @@ socket.on(EVENTS.EVT.CMD_REJECTED, ({ reason, event } = {}) => {
   setMsg(reason || `Command rejected: ${event || "unknown"}`, "is-error");
 });
 
+// ---------- timer tick ----------
+function startTimerTick() {
+  if (timerIntervalId) return;
+  timerIntervalId = setInterval(() => {
+    if (elTimer && state) {
+      elTimer.textContent = formatMMSS(getRemainingMs(state));
+    }
+  }, 100);
+}
+
+function stopTimerTick() {
+  if (timerIntervalId) {
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+  }
+}
+
 // Initial paint
 render();
+startTimerTick();
