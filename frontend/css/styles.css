@@ -3,7 +3,7 @@
     --nr-text: #e9eef7;
     --nr-muted: rgb(233 238 247 / 60%);
     --nr-accent: #ff6a00;
-    --nr-car-bg: rgb(255 106 0 / 15%);
+    --nr-car-bg: rgb(0 106 200 / 15%);
     --nr-error: #ff3b3b;
     --nr-success: #00ff8c;
 }
@@ -126,7 +126,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 4vh;
+    font-size: 8vh;
     font-weight: bold;
     border: 2px solid rgb(255 255 255 / 20%);
     border-radius: 4px;
@@ -137,13 +137,30 @@ body {
     background: rgb(255 255 255 / 10%);
     color: var(--nr-text);
     font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .pub-flag-timer.pub-flag-hidden {
     opacity: 0.3;
 }
 
-/* flag mode colors for RF and LB */
+.pub-timer-value {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.pub-timer-label {
+    font-size: 3vh;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+/* flag mode colors for R-F & L-B */
 .pub-flag-mode {
     text-transform: uppercase;
     font-size: 2vw;
@@ -277,18 +294,19 @@ body {
 .pub-drivers-list-empty {
     flex: 1;
     display: flex;
+    text-align: center;
     align-items: center;
     justify-content: center;
     width: 80%;
-    height: 60%;
     font-size: 10vh;
-    text-align: center;
-    color: var(--nr-muted);
+    color: #666;
     font-style: italic;
     background: rgb(255 106 0 / 8%);
     border-color: rgb(255 106 0 / 25%);
-    padding: 2vh;
+    padding: 0;
     box-sizing: border-box;
+    min-height: auto;
+    max-height: calc(100vh - 60vh);
 }
 
 /* populated driver list */
@@ -303,19 +321,19 @@ body {
     flex-direction: column;
 }
 
-.pub-drivers-list thead {
+.pub-drivers-list thead { /* outer */
     background: rgb(255 255 255 / 10%);
-    height: 7vh;
+    height: 8vh;
     display: table;
     width: 100%;
     table-layout: fixed;
 }
 
-.pub-drivers-list thead th {
-    padding: 0 0.5vw;
+.pub-drivers-list thead th { /* inner */
+    padding: 0 0.7vw;
     vertical-align: middle;
-    height: 7vh;
     box-sizing: border-box;
+    border: 1px solid rgb(255 255 255 / 15%);
 }
 
 .pub-drivers-list tbody {
@@ -323,20 +341,18 @@ body {
     flex: 1;
 }
 
-.pub-drivers-list tbody tr {
+.pub-drivers-list tbody tr { /* outer */
     display: table;
     width: 100%;
     table-layout: fixed;
     background: rgb(255 255 255 / 5%);
-    border: 1px solid rgb(255 255 255 / 10%);
     height: 7vh;
 }
 
-.pub-drivers-list tbody td {
-    padding: 0 0.5vw;
+.pub-drivers-list tbody td { /* inner */
+    padding: 0 0.7vw;
     border: 1px solid rgb(255 255 255 / 10%);
     vertical-align: middle;
-    height: 7vh;
     box-sizing: border-box;
 }
 
@@ -350,7 +366,7 @@ body {
     display: inline-block;
     font-weight: 700;
     color: var(--nr-accent);
-    font-size: 3vh;
+    font-size: 3.5vh;
     text-transform: uppercase;
     white-space: nowrap;
 }
@@ -358,7 +374,7 @@ body {
 .pub-driver-name {
     font-size: 3.5vh;
     font-weight: 550;
-    padding: 0.35rem 0.7rem;
+    padding: 0.35rem 1.7rem;
 }
 
 /* drivers list column definitions for leader-board */
@@ -375,7 +391,7 @@ body {
 }
 
 .pub-col-car {
-    width: 7%;
+    width: 8%;
     text-align: center;
     font-size: 3.5vh;
 }
@@ -387,7 +403,7 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 3.5vh;
-    padding-left: 0.5vh;
+    padding-left: 10px;
 }
 
 .pub-col-fastest {
@@ -438,12 +454,12 @@ body {
     font-size: 30vh;
     font-weight: bold;
     font-family: monospace;
-    color:  var(--nr-accent);
+    color: var(--nr-accent);
 }
 
 .countdown-label {
     font-size: 6vh;
-    color:  var(--nr-muted);
+    color: var(--nr-muted);
     text-transform: uppercase;
     margin-top: 2vh;
 }

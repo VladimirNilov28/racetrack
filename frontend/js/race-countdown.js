@@ -1,4 +1,7 @@
 import socket from "./socket.js";
+import {setConn, setupFullscreenToggle} from "./helpers/dom-helpers.js";
+import { getRemainingTime, formatSessionTimer, createLocalTicker } from "./helpers/timer-helpers.js";
+import {EVENTS} from "./helpers/constants.js";
 
 const elSessionLabel = document.querySelector(`[data-cd="session-info"] .pub-session-label`);
 const elSessionId = document.querySelector(`[data-cd="session-info"] .pub-session-id`);
@@ -8,32 +11,6 @@ const elFullscreen = document.getElementById("pub-fullscreen");
 
 let state = null;
 
-const EVENTS = Object.freeze({
-  STATE_UPDATE: "evt:state:update",
-});
-
-function setConn(online) {
-  if (!elConn) return;
-  elConn.textContent = online ? "online" : "offline";
-  elConn.classList.toggle("pub-conn-offline", !online);
-  elConn.classList.toggle("pub-conn-online", online);
-}
-
-function getRemainingTime(s) {
-  const t = s?.timer;
-  if (!t || t.status !== "running") return null;
-  if (typeof t.endsAt === "number") return t.endsAt - Date.now();
-  return null;
-}
-
-function formatTimer(ms) {
-  if (ms == null || ms < 0) return "00:00";
-  const totalSeconds = Math.ceil(ms / 1000);
-  const m = Math.floor(totalSeconds / 60);
-  const s = totalSeconds % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
 function getDisplaySession(s) {
   const current = s?.sessions?.current;
   if (current) {
@@ -42,6 +19,9 @@ function getDisplaySession(s) {
   return {session: null, label: null};
 }
 
+const localTicker = createLocalTicker(renderCountdown);
+
+// main render function
 function renderCountdown() {
   if (!elContent) return;
 
@@ -53,7 +33,7 @@ function renderCountdown() {
       elSessionId.textContent = session.id ?? "---";
     } else {
       elSessionLabel.textContent = "No Active Race";
-      elSessionId.textContent = "---";
+      elSessionId.textContent = "";
     }
   }
 
@@ -73,7 +53,7 @@ function renderCountdown() {
         <div class="pub-idle">
             <p class="pub-idle-icon">🙈</p>
             <p class="pub-idle-text">Please wait...</p>
-            <p class="pub-idle-sub">Waiting a race to start...</p>
+            <p class="pub-idle-sub">Waiting for a race to start...</p>
         </div>
     `;
     return;
@@ -81,7 +61,7 @@ function renderCountdown() {
 
   const isCurrentRace = state?.sessions?.current != null;
   const remainingTime = isCurrentRace ? getRemainingTime(state) : null;
-  const timerDisplay = remainingTime != null ? formatTimer(remainingTime) : "--:--";
+  const timerDisplay = remainingTime != null ? formatSessionTimer(remainingTime) : "--:--";
 
   elContent.innerHTML = `
     <div class="countdown-display">
@@ -92,46 +72,26 @@ function renderCountdown() {
 }
 
 socket.on("connect", () => {
-  setConn(true);
+  setConn(elConn, true);
   renderCountdown();
 });
 
 socket.on("disconnect", () => {
-  setConn(false);
-  stopLocalTicker();  // Add this line
+  setConn(elConn, false);
+  localTicker.stop();
   renderCountdown();
 });
 
-let localTickerInterval = null;
-
-function startLocalTicker() {
-  stopLocalTicker();
-  localTickerInterval = setInterval(renderCountdown, 250);
-}
-
-function stopLocalTicker() {
-  if (localTickerInterval) {
-    clearInterval(localTickerInterval);
-    localTickerInterval = null;
-  }
-}
-
-socket.connect();
+// socket.connect();
 
 socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
   state = snapshot;
   renderCountdown();
   if (state?.timer?.status === "running") {
-    startLocalTicker();
+    localTicker.start();
   } else {
-    stopLocalTicker();
+    localTicker.stop();
   }
 });
 
-elFullscreen?.addEventListener("click", () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(() => {});
-  } else {
-    document.exitFullscreen().catch(() => {});
-  }
-});
+setupFullscreenToggle(elFullscreen);

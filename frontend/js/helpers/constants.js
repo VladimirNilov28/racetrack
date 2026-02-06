@@ -5,3 +5,5 @@
 export const EVENTS = Object.freeze({
   STATE_UPDATE: "evt:state:update",
 });
+
+export const validModes = ["safe", "hazard", "danger", "finish"];

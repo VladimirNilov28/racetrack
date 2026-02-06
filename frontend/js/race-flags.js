@@ -1,32 +1,24 @@
-import socket from './socket.js';
+import socket from "./socket.js";
+import {setupFullscreenToggle} from "./helpers/dom-helpers.js";
+import {EVENTS, validModes} from "./helpers/constants.js";
 
-const elDisplay = document.getElementById('flag-display');
-const elFullscreen = document.getElementById('pub-fullscreen');
-
-const EVENTS = Object.freeze({
-  STATE_UPDATE: 'evt:state:update',
-});
+const elDisplay = document.getElementById("flag-display");
+const elFullscreen = document.getElementById("pub-fullscreen");
 
 function renderFlag(modeKey) {
   if (!elDisplay) return;
 
-  const validModes = ['safe', 'hazard', 'danger', 'finish'];
-  const mode = validModes.includes(modeKey) ? modeKey : 'danger';
+  // const validModes = ["safe", "hazard", "danger", "finish"];
+  const mode = validModes.includes(modeKey) ? modeKey : "danger";
 
-  elDisplay.setAttribute('data-mode', mode);
+  elDisplay.setAttribute("data-mode", mode);
 }
 
 socket.on(EVENTS.STATE_UPDATE, (state) => {
   const currentMode = state?.race?.mode?.value;
-  renderFlag(currentMode || 'danger');
+  renderFlag(currentMode || "danger");
 });
 
-elFullscreen?.addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(() => {});
-  } else {
-    document.exitFullscreen().catch(() => {});
-  }
-});
+setupFullscreenToggle(elFullscreen);
 
-renderFlag('danger');
+renderFlag("danger");
