@@ -21,4 +21,10 @@ socket.on(EVENTS.STATE_UPDATE, (state) => {
 
 setupFullscreenToggle(elFullscreen);
 
+// DEBUG: exposing socket globally for emulating lap-line-tracker, very noice.
+if (typeof window !== "undefined") {
+  window.debugSocket = socket;
+  Object.defineProperty(window, "state", {get: () => state});
+}
+
 renderFlag("danger");

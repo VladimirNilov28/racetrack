@@ -107,7 +107,7 @@ socket.on("disconnect", () => {
 });
 
 socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
-  // DEBUG: next line is for debugging purposes only:
+  // DEBUG: following line is for debugging purposes only:
   console.log("State received: ", JSON.stringify(snapshot, null, 2));
   state = snapshot;
   renderNextRace();
@@ -115,7 +115,7 @@ socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
 
 setupFullscreenToggle(elFullscreen);
 
-// DEBUG: exposing socket globally for emulating lap-line-tracker, front-desk etc.
+// DEBUG: following line exposes socket globally for direct communication with backend.
 if (typeof window !== "undefined") {
   window.debugSocket = socket;
   Object.defineProperty(window, "state", {get: () => state});

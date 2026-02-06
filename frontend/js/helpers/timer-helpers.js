@@ -38,6 +38,7 @@ export function createLocalTicker(renderCallback, interval = 250) {
       this.stop();
       tickerInterval = setInterval(renderCallback, interval);
     },
+
     stop() {
       if (tickerInterval) {
         clearInterval(tickerInterval);

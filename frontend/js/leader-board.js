@@ -55,8 +55,6 @@ function getLeaderboard(session) {
   });
 }
 
-const localTicker = createLocalTicker(renderLeaderboard);
-
 // main render function
 function renderLeaderboard() {
   if (!elContent) return;
@@ -85,8 +83,8 @@ function renderLeaderboard() {
       elSessionLabel.textContent = `${label}:`;
       elSessionId.textContent = session.id ?? "---";
     } else {
-      elSessionLabel.textContent = "No Active Race";
-      elSessionId.textContent = "---";
+      elSessionLabel.textContent = "";
+      elSessionId.textContent = "";
     }
   }
 
@@ -116,7 +114,9 @@ function renderLeaderboard() {
 
   let leaderboardHtml;
   if (leaderboard.length === 0) {
-    leaderboardHtml = `<div class="pub-drivers-list-empty">No active leaderboard... Yet.</div>`;
+    leaderboardHtml = `
+        <div class="pub-drivers-list-empty">No active leaderboard... Yet.</div>
+    `;
   } else {
     const rows = leaderboard.map((t, index) => {
       const hasLap = t.fastestLap != null;
@@ -168,6 +168,9 @@ function renderLeaderboard() {
   elContent.innerHTML = leaderboardHtml;
 }
 
+// socket.connect();
+const localTicker = createLocalTicker(renderLeaderboard);
+
 // sockets events
 socket.on("connect", () => {
   setConn(elConn, true);
@@ -180,7 +183,13 @@ socket.on("disconnect", () => {
   renderLeaderboard();
 });
 
+
 socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
+  console.log("Drivers:", snapshot?.sessions?.current?.drivers?.map(d => ({ // DEBUG
+    car: d.car,
+    laps: d.laps,
+    fastestLap: d.fastestLap,
+  })));
   state = snapshot;
   renderLeaderboard();
   if (state?.timer?.status === "running") {
