@@ -1,5 +1,5 @@
 import socket from "./socket.js";
-import { setConn, escapeHtml, setupFullscreenToggle } from "./helpers/dom-helpers.js";
+import {setConn, escapeHtml, setupFullscreenToggle} from "./helpers/dom-helpers.js";
 // import { getRemainingTime, formatTimer, createLocalTicker } from "./helpers/timer-helpers.js";
 import {EVENTS} from "./helpers/constants.js";
 
@@ -15,7 +15,10 @@ function getUpcomingSession(s) {
   const upcoming = s?.sessions?.upcoming;
 
   if (Array.isArray(upcoming) && upcoming.length > 0) {
-    return {session: upcoming[0], label: "Upcoming session"};
+    return {
+      session: upcoming[0],
+      label: "Drivers, proceed to the paddock for session",
+    };
   }
   return {session: null, label: null};
 }
@@ -32,7 +35,7 @@ function renderNextRace() {
   const {session, label} = getUpcomingSession(state);
   if (elSessionLabel && elSessionId) {
     if (session) {
-      elSessionLabel.textContent = `${label}:`;
+      elSessionLabel.textContent = `${label}`;
       elSessionId.textContent = session.id != null ? String(session.id) : "___";
     } else {
       elSessionLabel.textContent = "";
@@ -106,7 +109,7 @@ socket.on("disconnect", () => {
   renderNextRace();
 });
 
-socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
+socket.on(EVENTS.EVT.STATE_UPDATE, (snapshot) => {
   // DEBUG: following line is for debugging purposes only:
   console.log("State received: ", JSON.stringify(snapshot, null, 2));
   state = snapshot;

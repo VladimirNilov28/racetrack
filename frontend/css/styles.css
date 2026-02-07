@@ -63,7 +63,132 @@ body {
     min-height: 1em;
 }
 
-/* WHOLE PAGE */
+/* LAP-LINE TRACKER exclusive styles by Lewis Vuitton */
+
+.llt-page {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.llt-header {
+    flex-shrink: 0;
+}
+
+.llt-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2vh 4vw;
+    overflow: hidden;
+}
+
+.llt-button-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2vw;
+    width: 100%;
+    max-width: 1400px;
+    height: 100%;
+}
+
+.llt-lap-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgb(255 255 255 / 10%);
+    border: 2px solid rgb(255 255 255 / 30%);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--nr-text);
+    min-height: 0;
+    padding: 2vh 1vw;
+    z-index: 10;
+}
+
+.llt-lap-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: rgb(255 255 255 / 15%);
+}
+
+.llt-lap-button:not(:disabled):hover {
+    background: rgb(255 255 255 / 15%);
+    border-color: rgb(0 255 140 / 50%);
+    transform: translateY(-2px);
+}
+
+.llt-lap-button:not(:disabled):active {
+    transform: translateY(0);
+}
+
+
+.llt-lap-button.llt-flash {
+    background: rgb(0 255 140 / 40%);
+    border-color: rgb(0 255 140 / 80%);
+}
+
+.llt-car-number {
+    font-size: clamp(4rem, 10vh, 12rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--nr-success);
+}
+
+.llt-car-laps {
+    font-size: clamp(1rem, 2vh, 1.5rem);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+    text-transform: uppercase;
+    margin-top: 1vh;
+}
+
+/* Portrait layout */
+@media (orientation: portrait) {
+    .pub-header {
+        flex-direction: column;
+        gap: 1vh;
+    }
+
+    .llt-header-left,
+    .llt-header-right {
+        min-width: unset;
+    }
+
+    .llt-header-center {
+        order: -1;
+    }
+
+    .llt-title {
+        font-size: 6vh;
+    }
+
+    .pub-flag-box {
+        width: 20vw;
+        height: 15vw;
+        font-size: 4vh;
+    }
+
+    .llt-button-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2vh 4vw;
+    }
+}
+
+/* Landscape layout adjustments */
+@media (orientation: landscape) {
+    .llt-button-grid {
+        grid-template-rows: repeat(2, 1fr);
+    }
+}
+
+
+/* STUFF FOR PUBLIC PAGES: this section covers
+ race-flags, race-countdown, next-race & leader-board.
+ Some non-public pages get styling hints from here as well. */
 .pub-page {
     display: flex;
     flex-direction: column;
@@ -211,14 +336,16 @@ body {
     white-space: nowrap;
 }
 
+.pub-session-label-1,
+.pub-session-label-2,
 .pub-session-label {
     font-size: 5vh;
     color: var(--nr-muted);
     text-transform: uppercase;
     letter-spacing: 0.1vw;
     display: inline;
-    margin-right: 1vw;
 }
+
 
 .pub-session-id {
     font-size: 5vh;
@@ -409,8 +536,6 @@ body {
     width: 18%;
     text-align: center;
     font-size: 3.5vh;
-
-    /* font-family: monospace; fixed-width for better scaling */
 }
 
 .pub-col-laps {
@@ -467,6 +592,7 @@ body {
 .pub-footer {
     position: relative;
     height: 0;
+    z-index: 5;
 }
 
 /* PUBLIC SCREENS: online/offline status indicator */

@@ -399,6 +399,7 @@ socket.on("disconnect", () => {
 });
 
 socket.on(EVENTS.EVT.STATE_UPDATE, (snapshot) => {
+  console.log("State received:", JSON.stringify(snapshot, null, 2));
   state = snapshot;
   setLastUpdateNow();
   setMsg("");

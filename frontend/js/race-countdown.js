@@ -84,7 +84,7 @@ socket.on("disconnect", () => {
 
 // socket.connect();
 
-socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
+socket.on(EVENTS.EVT.STATE_UPDATE, (snapshot) => {
   state = snapshot;
   renderCountdown();
   if (state?.timer?.status === "running") {

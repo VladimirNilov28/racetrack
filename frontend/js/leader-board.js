@@ -24,11 +24,11 @@ function getLeaderboardSessions(s) {
   const lastResult = s?.sessions?.lastResult;
 
   if (current) {
-    return {session: current, label: "Current Race"};
+    return {session: current, label: "Current Race Session"};
   }
 
   if (lastResult) {
-    return {session: lastResult, label: "Previous Race Results"};
+    return {session: lastResult, label: "Previous Race Session Results"};
   }
 
   return {session: null, label: null};
@@ -183,8 +183,8 @@ socket.on("disconnect", () => {
   renderLeaderboard();
 });
 
-
-socket.on(EVENTS.STATE_UPDATE, (snapshot) => {
+socket.on(EVENTS.EVT.STATE_UPDATE, (snapshot) => {
+  console.log("State received:", JSON.stringify(snapshot, null, 2));
   console.log("Drivers:", snapshot?.sessions?.current?.drivers?.map(d => ({ // DEBUG
     car: d.car,
     laps: d.laps,

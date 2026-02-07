@@ -14,7 +14,7 @@ function renderFlag(modeKey) {
   elDisplay.setAttribute("data-mode", mode);
 }
 
-socket.on(EVENTS.STATE_UPDATE, (state) => {
+socket.on(EVENTS.EVT.STATE_UPDATE, (state) => {
   const currentMode = state?.race?.mode?.value;
   renderFlag(currentMode || "danger");
 });
