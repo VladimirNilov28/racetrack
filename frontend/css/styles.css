@@ -86,7 +86,7 @@ body {
 .llt-button-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2vw;
+    gap: 1vw;
     width: 100%;
     max-width: 1400px;
     height: 100%;
@@ -114,10 +114,12 @@ body {
     border-color: rgb(255 255 255 / 15%);
 }
 
-.llt-lap-button:not(:disabled):hover {
-    background: rgb(255 255 255 / 15%);
-    border-color: rgb(0 255 140 / 50%);
-    transform: translateY(-2px);
+@media (hover: hover) and (pointer: fine) {
+    .llt-lap-button:not(:disabled):hover {
+        background: rgb(255 255 255 / 15%);
+        border-color: rgb(0 255 140 / 50%);
+        transform: translateY(-2px);
+    }
 }
 
 .llt-lap-button:not(:disabled):active {
@@ -131,7 +133,7 @@ body {
 }
 
 .llt-car-number {
-    font-size: clamp(4rem, 10vh, 12rem);
+    font-size: clamp(2rem, 8vh, 12rem);
     font-weight: 900;
     line-height: 1;
     color: var(--nr-success);
@@ -150,16 +152,27 @@ body {
 @media (orientation: portrait) {
     .pub-header {
         flex-direction: column;
-        gap: 1vh;
+        gap: 0;
+    }
+
+    .pub-header-indicators {
+        display: flex;
+        flex-direction: row;
+        gap: 1vw;
+        width: 100%;
+        justify-content: center;
+        margin-right: 0;
     }
 
     .llt-header-left,
     .llt-header-right {
         min-width: unset;
+        flex: 0 0 auto;
     }
 
     .llt-header-center {
         order: -1;
+        width: 100%;
     }
 
     .llt-title {
@@ -167,6 +180,8 @@ body {
     }
 
     .pub-flag-box {
+        min-height: 12vh;
+        min-width: 20vh;
         width: 20vw;
         height: 15vw;
         font-size: 4vh;
@@ -182,6 +197,10 @@ body {
 @media (orientation: landscape) {
     .llt-button-grid {
         grid-template-rows: repeat(2, 1fr);
+    }
+
+    .pub-header-indicators {
+        margin-right: 4vw;
     }
 }
 
@@ -203,8 +222,14 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 2vw;
-    margin-bottom: 3vh;
+    margin-bottom: 1vh;
     flex-shrink: 0;
+}
+
+.pub-header-indicators {
+    display: flex;
+    gap: 2vw;
+    align-items: center;
 }
 
 .pub-header-left,
@@ -213,7 +238,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 0.5vh;
-    min-width: 15vw;
+    min-width: unset;
     flex: 0 0 auto;
 }
 
@@ -227,7 +252,7 @@ body {
 }
 
 .pub-title {
-    font-size: 10vh;
+    font-size: 5vw;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.2vw;
@@ -237,7 +262,7 @@ body {
 
 /* HEADER BOXES FOR N-R AND L-B */
 .pub-flag-label {
-    font-size: 3vh;
+    font-size: 30rem;
     color: var(--nr-muted);
     text-transform: uppercase;
     letter-spacing: 0.1vw;
@@ -250,7 +275,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 8vh;
+    font-size: 2rem;
     font-weight: bold;
     border: 2px solid rgb(255 255 255 / 20%);
     border-radius: 4px;
@@ -273,12 +298,12 @@ body {
 }
 
 .pub-timer-value {
-    font-size: 6vh;
+    font-size: 2rem;
     font-weight: inherit;
 }
 
 .pub-timer-label {
-    font-size: 3vh;
+    font-size: 0.8rem;
     font-weight: 500;
     letter-spacing: 0.05em;
     opacity: 0.8;
@@ -287,7 +312,7 @@ body {
 /* flag mode colors for R-F & L-B */
 .pub-flag-mode {
     text-transform: uppercase;
-    font-size: 2vw;
+    font-size: 1.5rem;
 }
 
 .pub-flag-mode[data-mode="safe"] {
@@ -336,19 +361,16 @@ body {
     white-space: nowrap;
 }
 
-.pub-session-label-1,
-.pub-session-label-2,
 .pub-session-label {
-    font-size: 5vh;
+    font-size: 2.5vw;
     color: var(--nr-muted);
     text-transform: uppercase;
     letter-spacing: 0.1vw;
     display: inline;
 }
 
-
 .pub-session-id {
-    font-size: 5vh;
+    font-size: 3vw;
     font-weight: bold;
     color: var(--nr-text);
     display: inline;
@@ -414,7 +436,7 @@ body {
     margin: 0;
 }
 
-/* TABLE FOR LISTING DRIVERS */
+/* TABLE FOR LISTING THE DRIVERS */
 
 /* empty driver list */
 .pub-drivers-list-empty {
@@ -441,7 +463,7 @@ body {
     flex: 1;
     table-layout: fixed;
     border-collapse: collapse;
-    margin: 0;
+    margin: 1em 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -575,7 +597,7 @@ body {
 }
 
 .countdown-timer {
-    font-size: 30vh;
+    font-size: 2rem;
     font-weight: bold;
     font-family: monospace;
     color: var(--nr-accent);
@@ -591,8 +613,14 @@ body {
 /* FOOTER */
 .pub-footer {
     position: relative;
-    height: 0;
+    height: auto;
+    min-height: 8vh;
     z-index: 5;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.5rem 0.3rem;
 }
 
 /* PUBLIC SCREENS: online/offline status indicator */
@@ -602,10 +630,10 @@ body {
 }
 
 .pub-conn {
-    position: fixed;
+    position: static;
     bottom: 1rem;
     left: 1rem;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -629,9 +657,10 @@ body {
     position: fixed;
     bottom: 1rem;
     right: 1rem;
-    width: 12vh;
-    height: 12vh;
-    font-size: 6vh;
+    width: 3.6rem;
+    height: 3.6rem;
+    font-size: 2.5rem;
+    align-items: center;
     border: none;
     border-radius: 8px;
     background: rgb(0 0 0 / 50%);
@@ -650,6 +679,10 @@ body {
 
 .btn-fullscreen:focus {
     outline: 2px solid white;
+}
+
+.pub-footer .btn-fullscreen {
+    position: static;
 }
 
 /* FRONTEND DEBUG: ping button */
