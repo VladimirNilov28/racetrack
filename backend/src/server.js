@@ -1,18 +1,25 @@
+// src/server.js
 import express from "express";
 import { createServer } from "node:http";
 import { env } from "node:process";
 import { Server } from "socket.io";
+
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import wildcard from "socketio-wildcard";
+
+import logger from "./logger.js";
 import { keyCheck } from "./security/global-key-control.js";
 import { registerPages } from "./routes/pages.js";
 import { keyAuthentication } from "./sockets/auth.js";
 import { socketConnect } from "./sockets/handlers.js";
 import { parseCli, printHelp } from "./config/cli.js";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import logger from "./logger.js";
-import wildcard from "socketio-wildcard";
 import { startTicker } from "./runtime/ticker.js";
-import { dbInit, dbClose } from "./config/database.js"
+
+import { dbInit, dbClose } from "./config/database.js";
+import { loadState, saveState } from "./config/state-snapshot.js";
+
 import {
   __unsafeReplaceStateForBoot,
   reduceByTime,
@@ -31,7 +38,9 @@ if (cli.help) {
 if (!cli.noKeycheck) keyCheck();
 
 // ---- DB: init + restore snapshot (BOOT only) ----
-await dbInit({ filename: env.SQLITE_FILE ?? "backend/db.sqlite" });
+// If db.sqlite must live in backend root, DO NOT prefix with "backend/".
+// cwd for nodemon is already .../backend
+await dbInit({ filename: env.SQLITE_FILE ?? "db.sqlite" });
 
 const restored = await loadState();
 if (restored) {
@@ -40,6 +49,7 @@ if (restored) {
   reduceByTime(Date.now());
 }
 
+// Server
 const PORT = env.PORT || 8080;
 const HOST = env.HOST || "0.0.0.0";
 
@@ -77,8 +87,10 @@ const unsubscribePersist = subscribe((next) => {
   });
 });
 
+// Ticker
 startTicker({ intervalMs: 250 });
 
+// Graceful shutdown
 process.on("SIGINT", async () => {
   logger.info("server:shutdown");
   try {
