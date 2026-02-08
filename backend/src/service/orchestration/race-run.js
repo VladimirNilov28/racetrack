@@ -1,29 +1,20 @@
 import { startRace } from "../race/start.js";
-import { endSession } from "../session/end.js";
 
 export function raceRun(state, params) {
-    if (state.race.mode.value !== "finish") return state;
+    // Only auto-start when there is a current session ready AND timer is idle.
+    // This must NOT be triggered by "finish" directly.
+    const autoStartNext = state.race?.autoStartNext ?? true;
+    if (!autoStartNext) return state;
 
-    const endedSession = endSession(state);
-    const hasNextRace = endedSession.sessions.upcoming.length > 0;
+    if (state.timer?.status !== "idle") return state;
+    if (!state.sessions?.current) return state;
 
-    if (!hasNextRace) {
-        return endedSession;
-    }
-    
-    // Toggle manual auto-start if enabled in state
-    const autoStartNext = endedSession.race?.autoStartNext ?? true;
-    if (!autoStartNext) {
-        return endedSession;
-    }
+    // You can decide: auto-start only if race mode is "danger" after endSession.
+    if (state.race?.mode?.value !== "danger") return state;
 
-    // Use provided durationSec or fall back to previously stored duration
     const durationSec = params?.durationSec ?? state._lastRaceDuration;
-
-    if (durationSec === undefined || durationSec === null) {
+    if (durationSec == null)
         throw new Error("durationSec is required to start the next session");
-    }
 
-    // Start the next race
-    return startRace(endedSession, durationSec);
+    return startRace(state, durationSec);
 }

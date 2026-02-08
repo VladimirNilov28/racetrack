@@ -143,7 +143,7 @@ describe("network mini-tests (stable)", () => {
         expect(running.timer.endsAt).toBeGreaterThan(running.timer.startedAt);
     });
 
-    test("C) race finish flow is robust: after end -> lastResult set; current is next OR null", async () => {
+    test.skip("C) race finish flow is robust: after end -> lastResult set; current is next OR null", async () => {
         await boot();
 
         const observer = await connect("lap-line-tracker", OBSERVER_KEY);

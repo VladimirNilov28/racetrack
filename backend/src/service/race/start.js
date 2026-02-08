@@ -1,14 +1,22 @@
-export function startRace(state, duration = 60) {
-
-    const { upcoming } = state.sessions;
-    
-    // Sessions update
-    if (upcoming.length === 0) throw new Error("No upcoming sessions");
-
-    if (state.timer.status === "running") throw new Error("Current race is already active and can not be started");
-
+export function startRace(state, durationSec = 60) {
     const now = Date.now();
 
+    // If there is no current session yet, promote the next upcoming session
+    let current = state.sessions.current;
+    let upcoming = state.sessions.upcoming;
+
+    if (!current) {
+        if (!upcoming || upcoming.length === 0) {
+            throw new Error("There is no upcoming session to start");
+        }
+        const [nextCurrent, ...rest] = upcoming;
+        current = nextCurrent;
+        upcoming = rest;
+    }
+
+    if (!durationSec || durationSec <= 0) {
+        throw new Error("durationSec must be a positive number");
+    }
 
     return {
         ...state,
@@ -16,18 +24,24 @@ export function startRace(state, duration = 60) {
             ...state.meta,
             updatedAt: now,
         },
+        race: {
+            ...state.race,
+            // Starting a race puts the system into SAFE mode
+            mode: {
+                value: "safe",
+                updatedAt: now,
+            },
+        },
         sessions: {
             ...state.sessions,
-            current: upcoming[0],
-            upcoming: upcoming.slice(1),
+            current,
+            upcoming,
         },
         timer: {
-            ...state.timer,
             status: "running",
             startedAt: now,
-            endsAt: now + duration * 1000,
-            durationSec: duration,
+            endsAt: now + durationSec * 1000,
+            durationSec,
         },
-        _lastRaceDuration: duration,  // Store for auto-start of next race
     };
 }

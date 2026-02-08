@@ -52,13 +52,13 @@ export function createInitialState() {
             // race process state (NOT session data)
             mode: {
                 // "safe" | "hazard" | "danger" | "finish"
-                value: "safe",
+                value: "danger",
 
                 // timestamp when race mode was last changed
                 updatedAt: null,
 
                 // auto start next race after finish
-                autoStartNext: true,
+                autoStartNext: false,
             },
         },
 

@@ -82,6 +82,10 @@ export function dispatch(cmd) {
 
         case "cmd:session:end":
             next = endSession(next);
+
+            // Optional auto-start after session end (not after finish)
+            next = raceRun(next, { durationSec: RACE_DURATION_SEC });
+
             break;
 
         // --- DRIVER (Receptionist) ---
@@ -139,22 +143,12 @@ export function dispatch(cmd) {
 export function reduceByTime(now = Date.now()) {
     const prev = state;
 
-    // IMPORTANT: capture duration BEFORE raceTick can clear/reset timer fields
-    const durationSec = state.timer?.durationSec;
-
     let next = state;
 
-    // 1) time-based transition to finish
+    // 1) Time-based transition: if timer ended -> switch race to "finish"
+    // IMPORTANT: This must NOT end the session automatically.
+    // "Finish" and "End Session" are two distinct operations in the spec.
     next = raceTick(next, now);
-
-    // 2) when in finish, raceRun needs durationSec from the race that just ended
-    if (next.race?.mode?.value === "finish") {
-        if (durationSec == null) {
-            logger.warn("raceRun:skip", { reason: "durationSec is missing" });
-        } else {
-            next = raceRun(next, { durationSec });
-        }
-    }
 
     state = next;
 

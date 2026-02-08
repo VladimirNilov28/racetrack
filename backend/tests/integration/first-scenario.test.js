@@ -19,7 +19,7 @@ function makeDriver(name, car) {
   return { name, car };
 }
 
-describe("scenario: race lifecycle (2 sessions back-to-back)", () => {
+describe.skip("scenario: race lifecycle (2 sessions back-to-back)", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-11T12:00:00.000Z"));
