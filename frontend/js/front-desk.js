@@ -96,6 +96,23 @@ function ensureSelection() {
   return upcoming[0];
 }
 
+// helper function for automagic car-selector
+function getNextAvailableCar(session) {
+  if (!session) return null;
+
+  const drivers = Array.isArray(session.drivers) ? session.drivers : [];
+  const takenCars = new Set(drivers.map((d) => d.car));
+
+  // Find first available car from 1-8
+  for (let carNum = 1; carNum <= 8; carNum++) {
+    if (!takenCars.has(carNum)) {
+      return carNum;
+    }
+  }
+
+  return null; // All cars taken
+}
+
 // Session ID
 function makeNextSessionId() {
   // Check all sessions
@@ -349,12 +366,6 @@ formAddDriver?.addEventListener("submit", (e) => {
     return;
   }
 
-  const carNum = Number(inputDriverCar?.value);
-  if (!Number.isFinite(carNum) || carNum < 1) {
-    setMsg("Select a car number.", "is-error");
-    return;
-  }
-
   // Validate: Check for duplicate driver names in this session
   const drivers = Array.isArray(sess.drivers) ? sess.drivers : [];
   const duplicateName = drivers.some(
@@ -365,11 +376,25 @@ formAddDriver?.addEventListener("submit", (e) => {
     return;
   }
 
-  // Validate: Check if car is already taken in this session
-  const carTaken = drivers.some((d) => d.car === carNum);
-  if (carTaken) {
-    setMsg(`Car ${carNum} is already taken in this session.`, "is-error");
+  let carNum = Number(inputDriverCar?.value);
+
+  // automagic driver>car assignment
+  if (!Number.isFinite(carNum) || carNum === 0) {
+    carNum = getNextAvailableCar(sess);
+    if (carNum === null) {
+      setMsg("All cars (1-8) are already assigned in this session.", "is-error");
+      return;
+    }
+  } else if (carNum < 1 || carNum > 8) {
+    setMsg("Car number must be between 1 and 8.", "is-error");
     return;
+  } else {
+    // manual car selector for manual men
+    const carTaken = drivers.some((d) => d.car === carNum);
+    if (carTaken) {
+      setMsg(`Car ${carNum} is already taken in this session.`, "is-error");
+      return;
+    }
   }
 
   // SOCKET: cmd:driver:add — Adds driver { sessionId, driver: { name, car } }
@@ -380,9 +405,9 @@ formAddDriver?.addEventListener("submit", (e) => {
 
   setMsg(`Adding ${name} to car ${carNum}...`, "is-info");
 
-  // Clear inputs
+  // Clear inputs and reset to auto-assign
   if (inputDriverName) inputDriverName.value = "";
-  if (inputDriverCar) inputDriverCar.value = "";
+  if (inputDriverCar) inputDriverCar.value = "0";
 });
 
 // ------------- socket -> UI -------------
