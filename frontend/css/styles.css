@@ -396,8 +396,8 @@ body {
 }
 
 .pub-error-icon {
-    font-size: 25vh;
-    margin: 0 0 2vh;
+    font-size: 20vh;
+    margin: 0 0 1vh;
 }
 
 .pub-error-text {
@@ -420,8 +420,8 @@ body {
 }
 
 .pub-idle-icon {
-    font-size: 25vh;
-    margin: 0 0 2vh;
+    font-size: 20vh;
+    margin: 0 0 1vh;
 }
 
 .pub-idle-text {
