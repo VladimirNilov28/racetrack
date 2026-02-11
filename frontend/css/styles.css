@@ -1,8 +1,31 @@
+:root {
+    --nr-bg: #0a0e14;
+    --nr-text: #e9eef7;
+    --nr-muted: rgb(233 238 247 / 60%);
+    --nr-accent: #ff6a00;
+    --nr-car-bg: rgb(0 106 200 / 15%);
+    --nr-error: #ff3b3b;
+    --nr-success: #00ff8c;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--nr-bg);
+    color: var(--nr-text);
+    font-family: sans-serif;
+}
+
+.pub-body {
+    min-height: 100vh;
+    overflow: hidden;
+}
+
 /* CSS FOR AUTHENTICATION FORM (CHANGE ME IF YOU WANT) */
 .login-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgb(0 0 0 / 85%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,4 +62,630 @@
     color: #ff4d4d;
     min-height: 1em;
 }
-/*==============================*/
+
+/* LAP-LINE TRACKER exclusive styles by Lewis Vuitton */
+
+.llt-page {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.llt-header {
+    flex-shrink: 0;
+}
+
+.llt-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2vh 4vw;
+    overflow: hidden;
+}
+
+.llt-button-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1vw;
+    width: 100%;
+    max-width: 1400px;
+    height: 100%;
+}
+
+.llt-lap-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgb(255 255 255 / 10%);
+    border: 2px solid rgb(255 255 255 / 30%);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--nr-text);
+    min-height: 0;
+    padding: 2vh 1vw;
+    z-index: 10;
+}
+
+.llt-lap-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: rgb(255 255 255 / 15%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .llt-lap-button:not(:disabled):hover {
+        background: rgb(255 255 255 / 15%);
+        border-color: rgb(0 255 140 / 50%);
+        transform: translateY(-2px);
+    }
+}
+
+.llt-lap-button:not(:disabled):active {
+    transform: translateY(0);
+}
+
+
+.llt-lap-button.llt-flash {
+    background: rgb(0 255 140 / 40%);
+    border-color: rgb(0 255 140 / 80%);
+}
+
+.llt-car-number {
+    font-size: clamp(2rem, 8vh, 12rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--nr-success);
+}
+
+.llt-car-laps {
+    font-size: clamp(1rem, 2vh, 1.5rem);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+    text-transform: uppercase;
+    margin-top: 1vh;
+}
+
+/* Portrait layout */
+@media (orientation: portrait) {
+    .pub-header {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .pub-header-indicators {
+        display: flex;
+        flex-direction: row;
+        gap: 1vw;
+        width: 100%;
+        justify-content: center;
+        margin-right: 0;
+    }
+
+    .llt-header-left,
+    .llt-header-right {
+        min-width: unset;
+        flex: 0 0 auto;
+    }
+
+    .llt-header-center {
+        order: -1;
+        width: 100%;
+    }
+
+    .llt-title {
+        font-size: 6vh;
+    }
+
+    .pub-flag-box {
+        min-height: 12vh;
+        min-width: 20vh;
+        width: 20vw;
+        height: 15vw;
+        font-size: 4vh;
+    }
+
+    .llt-button-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2vh 4vw;
+    }
+}
+
+/* Landscape layout adjustments */
+@media (orientation: landscape) {
+    .llt-button-grid {
+        grid-template-rows: repeat(2, 1fr);
+    }
+
+    .pub-header-indicators {
+        margin-right: 4vw;
+    }
+}
+
+
+/* STUFF FOR PUBLIC PAGES: this section covers
+ race-flags, race-countdown, next-race & leader-board.
+ Some non-public pages get styling hints from here as well. */
+.pub-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 2vh 2vw;
+    box-sizing: border-box;
+}
+
+/* HEADER STYLES for NR, LB and CD */
+.pub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2vw;
+    margin-bottom: 1vh;
+    flex-shrink: 0;
+}
+
+.pub-header-indicators {
+    display: flex;
+    gap: 2vw;
+    align-items: center;
+}
+
+.pub-header-left,
+.pub-header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5vh;
+    min-width: unset;
+    flex: 0 0 auto;
+}
+
+.pub-header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1vh;
+    flex: 1 1 auto;
+}
+
+.pub-title {
+    font-size: 5vw;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.2vw;
+    color: var(--nr-accent);
+    margin: 1rem 0 0;
+}
+
+/* HEADER BOXES FOR N-R AND L-B */
+.pub-flag-label {
+    font-size: 30rem;
+    color: var(--nr-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1vw;
+    font-weight: 600;
+}
+
+.pub-flag-box {
+    width: 12vw;
+    height: 9vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    border: 2px solid rgb(255 255 255 / 20%);
+    border-radius: 4px;
+}
+
+/* timer box; dimmed when not running */
+.pub-flag-timer {
+    background: rgb(255 255 255 / 10%);
+    color: var(--nr-text);
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.pub-flag-timer.pub-flag-hidden {
+    opacity: 0.3;
+}
+
+.pub-timer-value {
+    font-size: 2rem;
+    font-weight: inherit;
+}
+
+.pub-timer-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+/* flag mode colors for R-F & L-B */
+.pub-flag-mode {
+    text-transform: uppercase;
+    font-size: 1.5rem;
+}
+
+.pub-flag-mode[data-mode="safe"] {
+    background: green;
+    color: white;
+}
+
+.pub-flag-mode[data-mode="hazard"] {
+    background: yellow;
+    color: black;
+}
+
+.pub-flag-mode[data-mode="danger"] {
+    background: red;
+    color: white;
+}
+
+.pub-flag-mode[data-mode="finish"] {
+    background-color: white;
+    background-image: conic-gradient(
+            black 90deg,
+            white 90deg 180deg,
+            black 180deg 270deg,
+            white 270deg
+    );
+    background-size: 15vw 15vw;
+    background-attachment: fixed;
+    color: black;
+}
+
+/* RACE-FLAGS SPECIFIC */
+.pub-flag-fullscreen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20vh;
+    font-weight: bold;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* SESSION INFO for race-countdown, leader-board and next-race */
+.pub-session {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.pub-session-label {
+    font-size: 2.5vw;
+    color: var(--nr-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1vw;
+    display: inline;
+}
+
+.pub-session-id {
+    font-size: 3vw;
+    font-weight: bold;
+    color: var(--nr-text);
+    display: inline;
+}
+
+/* CONTENT BLOCK */
+.pub-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* pub-content for states with no content */
+
+/* error/disconnected state */
+.pub-error {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.pub-error-icon {
+    font-size: 20vh;
+    margin: 0 0 1vh;
+}
+
+.pub-error-text {
+    font-size: 10vh;
+    font-weight: 700;
+    color: var(--nr-error);
+    margin: 0 0 1vh;
+}
+
+.pub-error-sub {
+    font-size: 5vh;
+    color: var(--nr-muted);
+    margin: 0;
+}
+
+/* idle/no data state */
+.pub-idle {
+    text-align: center;
+    margin-top: 10vh;
+}
+
+.pub-idle-icon {
+    font-size: 20vh;
+    margin: 0 0 1vh;
+}
+
+.pub-idle-text {
+    font-size: 10vh;
+    font-weight: 700;
+    margin: 0 0 1vh;
+}
+
+.pub-idle-sub {
+    font-size: 5vh;
+    color: var(--nr-muted);
+    margin: 0;
+}
+
+/* TABLE FOR LISTING THE DRIVERS */
+
+/* empty driver list */
+.pub-drivers-list-empty {
+    flex: 1;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    font-size: 10vh;
+    color: #666;
+    font-style: italic;
+    background: rgb(255 106 0 / 8%);
+    border-color: rgb(255 106 0 / 25%);
+    padding: 0;
+    box-sizing: border-box;
+    min-height: auto;
+    max-height: calc(100vh - 60vh);
+}
+
+/* populated driver list */
+.pub-drivers-list {
+    width: 80%;
+    flex: 1;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 1em 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.pub-drivers-list thead { /* outer */
+    background: rgb(255 255 255 / 10%);
+    height: 8vh;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.pub-drivers-list thead th { /* inner */
+    padding: 0 0.7vw;
+    vertical-align: middle;
+    box-sizing: border-box;
+    border: 1px solid rgb(255 255 255 / 15%);
+}
+
+.pub-drivers-list tbody {
+    display: block;
+    flex: 1;
+}
+
+.pub-drivers-list tbody tr { /* outer */
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    background: rgb(255 255 255 / 5%);
+    height: 7vh;
+}
+
+.pub-drivers-list tbody td { /* inner */
+    padding: 0 0.7vw;
+    border: 1px solid rgb(255 255 255 / 10%);
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+.pub-driver {
+    border-radius: 0;
+    background: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
+}
+
+.pub-car {
+    display: inline-block;
+    font-weight: 700;
+    color: var(--nr-accent);
+    font-size: 3.5vh;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.pub-driver-name {
+    font-size: 3.5vh;
+    font-weight: 550;
+    padding: 0.35rem 1.7rem;
+}
+
+/* drivers list column definitions for leader-board */
+.pub-col-medal {
+    width: 5%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+.pub-col-pos {
+    width: 7%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+.pub-col-car {
+    width: 10%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+.pub-col-name { /* TEST: text overflow truncation */
+    width: auto;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 3.5vh;
+    padding-left: 10px;
+}
+
+.pub-col-fastest {
+    width: 18%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+.pub-col-laps {
+    width: 8%;
+    text-align: center;
+    font-size: 3.5vh;
+}
+
+/* medal icons */
+.pub-medal-gold {
+    color: #ffd700;
+    font-size: 3vh;
+}
+
+.pub-medal-silver {
+    color: #c0c0c0;
+    font-size: 3vh;
+}
+
+.pub-medal-bronze {
+    color: #cd7f32;
+    font-size: 3vh;
+}
+
+/* position styling for drivers with no laps completed */
+.pub-position-none {
+    color: var(--nr-muted);
+}
+
+/* countdown-display-specific */
+.countdown-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.countdown-timer {
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: monospace;
+    color: var(--nr-accent);
+}
+
+.countdown-label {
+    font-size: 6vh;
+    color: var(--nr-muted);
+    text-transform: uppercase;
+    margin-top: 2vh;
+}
+
+/* FOOTER */
+.pub-footer {
+    position: relative;
+    height: auto;
+    min-height: 8vh;
+    z-index: 5;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.5rem 0.3rem;
+}
+
+/* PUBLIC SCREENS: online/offline status indicator */
+.pub-status {
+    text-align: center;
+    padding-top: 1rem;
+}
+
+.pub-conn {
+    position: static;
+    bottom: 1rem;
+    left: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.2rem;
+    z-index: 10;
+}
+
+.pub-conn-offline {
+    color: var(--nr-error);
+    background: rgb(255 59 59 / 15%);
+}
+
+.pub-conn-online {
+    color: var(--nr-success);
+    background: rgb(0 255 140 / 20%);
+}
+
+/* PUBLIC SCREENS: fullscreen button */
+.btn-fullscreen {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: 3.6rem;
+    height: 3.6rem;
+    font-size: 2.5rem;
+    align-items: center;
+    border: none;
+    border-radius: 8px;
+    background: rgb(0 0 0 / 50%);
+    color: white;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    z-index: 10; /* pushes layer on top */
+    touch-action: manipulation; /* touch/safari compat fix */
+}
+
+.btn-fullscreen:hover, /* touch/safari compat fix */
+.btn-fullscreen:active {
+    opacity: 1;
+}
+
+.btn-fullscreen:focus {
+    outline: 2px solid white;
+}
+
+.pub-footer .btn-fullscreen {
+    position: static;
+}
+
+/* FRONTEND DEBUG: ping button */
+.btn-ping {
+    z-index: 20;
+}

@@ -1,17 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/styles.css">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/race-control.css" />
+  <title>Race Control</title>
 </head>
 <body>
-    <h1>OK: race-control</h1>
-    <button id="ping-btn">
-        <span>PING</span>
-    </button>
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="../js/main.js"></script>
+  <main class="page rc_theme">
+    <header class="page_header rc_header">
+      <div class="rc_header_left">
+        <h1 class="page_title rc_title">Race Control</h1>
+        <p class="muted rc_subtitle">Safety Official • Start race • Set race mode • Finish session</p>
+      </div>
+
+      <div class="status rc_status">
+        <span class="muted">Connection:</span>
+        <strong data-rc="conn-status" class="badge badge_offline">Offline</strong>
+        <span class="rc_status_ticks" aria-hidden="true"></span>
+      </div>
+    </header>
+
+    <!-- stage -->
+    <section class="rc_stage" aria-label="Race control panels">
+      <div class="rc_rails" aria-hidden="true"></div>
+
+      <div class="rc_grid">
+        <!-- Card 1: Current / Next session -->
+        <article class="card rc_card">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Session</h2>
+
+          <div class="kv">
+            <div class="muted">Current</div>
+            <div data-rc="current-session">—</div>
+          </div>
+
+          <div class="kv">
+            <div class="muted">Next</div>
+            <div data-rc="next-session">—</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button type="button" class="btn btn_primary" data-action="rc-start">
+              Start race
+            </button>
+            <button type="button" class="btn btn_warn" data-action="rc-finish">
+              Finish race
+            </button>
+          </div>
+
+          <p class="muted" style="margin-top:0.6rem;">
+            Finish locks the flag to chequered and cannot be changed after.
+          </p>
+        </article>
+
+        <!-- Card 2: Race Timer -->
+        <article class="card rc_card">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Timer</h2>
+
+          <div class="rc_timer">
+            <div class="muted">Remaining</div>
+            <div data-rc="timer" class="rc_timecode">—:—</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button type="button" class="btn btn_add" data-action="rc-sync">
+              Sync state
+            </button>
+            <div class="muted" data-rc="last-update">—</div>
+          </div>
+        </article>
+
+        <!-- Card 3: Flag / Mode Controls -->
+        <article class="card rc_card">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Race Mode</h2>
+
+          <div class="rc_modes" role="group" aria-label="Race mode controls">
+            <button type="button" class="btn rc_mode rc_mode_safe" data-mode="safe" data-action="rc-set-mode">
+              Safe
+            </button>
+            <button type="button" class="btn rc_mode rc_mode_hazard" data-mode="hazard" data-action="rc-set-mode">
+              Hazard
+            </button>
+            <button type="button" class="btn rc_mode rc_mode_danger" data-mode="danger" data-action="rc-set-mode">
+              Danger
+            </button>
+            <button type="button" class="btn rc_mode rc_mode_finish" data-mode="finish" data-action="rc-set-mode">
+              Finish
+            </button>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="kv">
+            <div class="muted">Current mode</div>
+            <div data-rc="current-mode" class="rc_mode_badge">—</div>
+          </div>
+
+          <div class="muted rc_msg" data-rc="msg" role="status" aria-live="polite"></div>
+        </article>
+
+        <!-- Card 4: End Session -->
+        <article class="card rc_card">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">End Session</h2>
+
+          <p class="muted">
+            When the race is in Finish mode and all cars are back in pit lane, end the session.
+          </p>
+
+          <div class="row" style="margin-top:0.9rem;">
+            <button type="button" class="btn btn_danger" data-action="rc-end-session">
+              End session
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/race-control.js"></script>
 </body>
 </html>

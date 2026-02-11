@@ -4,14 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/styles.css">
-    <title>Document</title>
+    <title>Lap-Line Tracker</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+        <text y='.9em' font-size='90'>⏺️</text></svg>"/>
 </head>
 <body>
-    <h1>OK: lap-line-tracker</h1>
-    <button id="ping-btn">
-        <span>PING</span>
-    </button>
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="../js/main.js"></script>
+
+<main class="pub-page llt-page">
+
+    <header class="pub-header">
+
+        <div class="pub-header-center">
+            <h1 class="pub-title llt-title">Lap-Line Tracker</h1>
+            <div class="pub-session">
+                <span class="pub-session-label">Session:</span>
+                <span class="pub-session-id" data-llt="session-id">N/A</span>
+            </div>
+        </div>
+
+        <div class="pub-header-indicators">
+            <div class="pub-header-left">
+                <div class="pub-flag-box pub-flag-mode" data-llt="flag-mode"></div>
+            </div>
+
+            <div class="pub-header-right">
+                <div class="pub-flag-box pub-flag-timer" data-llt="timer-display">
+                    <span class="pub-timer-value" data-llt="timer-value">--:--</span>
+                    <span class="pub-timer-label">REMAINING</span>
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+    <section class="llt-content">
+
+        <div class="llt-button-grid">
+            <button class="llt-lap-button" data-car="1">
+                <span class="llt-car-number">1</span>
+                <span class="llt-car-laps">Laps: 0</span>
+            </button>
+            <button class="llt-lap-button" data-car="2">
+                <span class="llt-car-number">2</span>
+                <span class="llt-car-laps">Laps: 0</span>
+            </button>
+            <button class="llt-lap-button" data-car="3">
+                <span class="llt-car-number">3</span>
+                <span class="llt-car-laps">Laps: 0</span>
+            </button>
+            <button class="llt-lap-button" data-car="4">
+                <span class="llt-car-number">4</span>
+                <span class="llt-car-laps">Laps: 0</span>
+            </button>
+            <button class="llt-lap-button" data-car="5">
+                <span class="llt-car-number">5</span>
+                <span class="llt-car-laps">Laps: 0</span>
+            </button>
+            <button class="llt-lap-button" data-car="6">
+                <span class="llt-car-number">6</span>
+                <span class="llt-car-laps">Laps: 0</span>
+            </button>
+            <button class="llt-lap-button" data-car="7">
+                <span class="llt-car-number">7</span>
+                <span class="llt-car-laps">Laps: 0</span>
+            </button>
+            <button class="llt-lap-button" data-car="8">
+                <span class="llt-car-number">8</span>
+                <span class="llt-car-laps">Laps: 0</span>
+            </button>
+        </div>
+
+    </section>
+
+    <footer class="pub-footer">
+        <span data-llt="conn-status" class="pub-conn pub-conn-offline">Offline.</span>
+        <button id="llt-fullscreen" class="btn-fullscreen">⛶</button>
+    </footer>
+
+</main>
+
+<script src="/socket.io/socket.io.js"></script>
+<script type="module" src="../js/main.js"></script>
+<script type="module" src="../js/lap-line-tracker.js"></script>
 </body>
 </html>
