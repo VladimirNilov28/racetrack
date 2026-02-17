@@ -1,0 +1,201 @@
+/* css/portal.css */
+
+:root {
+    /* Theme Variables */
+    --sys-bg: #070a10;
+    --sys-panel: rgba(15, 20, 31, 0.85);
+    --sys-line: rgba(255, 255, 255, 0.12);
+    --sys-text: #e9eef7;
+    --sys-muted: rgba(233, 238, 247, 0.6);
+    --sys-orange: #ff6a00;
+    --sys-orange-glow: rgba(255, 106, 0, 0.4);
+    --sys-blue: #2b7cff;
+
+    --ease: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global Reset */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--sys-bg);
+    color: var(--sys-text);
+
+    /* Sci-fi Background Gradient */
+    background:
+        radial-gradient(
+            1400px 700px at 50% -10%,
+            rgba(255, 120, 40, 0.1),
+            transparent 55%
+        ),
+        radial-gradient(
+            1200px 800px at 20% 20%,
+            rgba(255, 255, 255, 0.03),
+            transparent 60%
+        ),
+        radial-gradient(
+            1600px 1000px at 50% 90%,
+            rgba(0, 0, 0, 0.8),
+            transparent 60%
+        ),
+        linear-gradient(180deg, #0a0f17 0%, #070a10 45%, #04070c 100%);
+    background-attachment: fixed;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* ---- Layout Container ---- */
+.container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1; /* Ensures content sits above background rails */
+}
+
+/* ---- Header ---- */
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 2px;
+    margin: 0;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.subtitle {
+    color: var(--sys-muted);
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* ---- Module Grid ---- */
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+
+/* ---- Card Links ---- */
+.card-link {
+    display: block;
+    text-decoration: none;
+    position: relative;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 40%),
+        var(--sys-panel);
+    border: 1px solid var(--sys-line);
+    border-radius: 6px;
+    padding: 2rem 1.5rem;
+    transition: var(--ease);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+/* Top Orange Bar */
+.card-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--sys-orange);
+    box-shadow: 0 0 10px var(--sys-orange-glow);
+    opacity: 0.7;
+    transition: var(--ease);
+}
+
+/* Card Title */
+.card-title {
+    color: var(--sys-text);
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Status Dot Decoration */
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--sys-muted);
+    border-radius: 50%;
+    margin-right: 12px;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+    transition: var(--ease);
+}
+
+/* Description Text */
+.card-desc {
+    color: var(--sys-muted);
+    font-size: 0.85rem;
+    display: block;
+    line-height: 1.4;
+}
+
+/* ---- Hover Effects ---- */
+.card-link:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent 40%),
+        var(--sys-panel);
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(255, 106, 0, 0.1);
+}
+
+.card-link:hover .card-bar {
+    opacity: 1;
+    height: 4px;
+    box-shadow: 0 0 15px var(--sys-orange);
+}
+
+.card-link:hover .card-title {
+    color: #fff;
+}
+
+.card-link:hover .status-dot {
+    background: var(--sys-orange);
+    box-shadow: 0 0 8px var(--sys-orange);
+}
+
+/* ---- Background Rails Decoration ---- */
+.bg-rails {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0; /* Behind content */
+    opacity: 0.5;
+    background:
+        linear-gradient(90deg, transparent 95%, rgba(255, 255, 255, 0.03) 95%) 0
+            0 / 40px 40px,
+        linear-gradient(transparent 95%, rgba(255, 255, 255, 0.03) 95%) 0 0 /
+            40px 40px;
+}

@@ -19,28 +19,18 @@ const pages = {
 };
 
 export function registerPages(app) {
-  // index
+  // index - FIX: Serve the actual index.html file
   app.get("/", (req, res) => {
     logger.info("http:page:serve", {
       route: "/",
       ip: req.ip,
     });
 
-    res.send(`
-      <h1>Racetrack Interfaces</h1>
-      <ul>
-        <li><a href="/front-desk">Front Desk</a> (Secured)</li>
-        <li><a href="/lap-line-tracker">Lap Line Tracker</a> (Secured)</li>
-        <li><a href="/leader-board">Leader Board</a></li>
-        <li><a href="/next-race">Next Race</a></li>
-        <li><a href="/race-control">Race Control</a> (Secured)</li>
-        <li><a href="/race-countdown">Race Countdown</a></li>
-        <li><a href="/race-flags">Race Flags</a></li>
-      </ul>
-    `);
+    // This makes the server load your new HTML file
+    res.sendFile(path.join(PUBLIC, "index.html"));
   });
 
-  // other pages
+  // other pages (Keep this as is)
   for (const [route, file] of Object.entries(pages)) {
     app.get(route, (req, res) => {
       logger.info("http:page:serve", {
