@@ -7,7 +7,6 @@ import fs from "node:fs/promises";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// src/persistence/database.js → ../../db.sqlite
 const DEFAULT_DB_FILE = path.resolve(__dirname, "../../db.sqlite");
 
 let db = null;
@@ -20,17 +19,33 @@ export async function dbInit({ filename = DEFAULT_DB_FILE } = {}) {
   if (db) return;
 
   await fs.mkdir(path.dirname(filename), { recursive: true });
-  db = new sqlite3.Database(filename);
 
-  await dbExec(`
-    CREATE TABLE IF NOT EXISTS state_snapshot (
-      id INTEGER PRIMARY KEY CHECK (id = 1),
-      state_json TEXT NOT NULL,
-      updated_at INTEGER NOT NULL
-    );
-  `);
+  // ШАГ 1: Открываем соединение через Promise, чтобы поймать ошибки открытия
+  db = await new Promise((resolve, reject) => {
+    const _db = new sqlite3.Database(filename, (err) => {
+      if (err) reject(err);
+      else resolve(_db);
+    });
+  });
+
+  // ШАГ 2: Создаем таблицы. Если ошибка — закрываем и обнуляем db!
+  try {
+    await dbExec(`
+      CREATE TABLE IF NOT EXISTS state_snapshot (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        state_json TEXT NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+    `);
+  } catch (err) {
+    // Важно: если не удалось создать таблицы, закрываем соединение,
+    // чтобы не оставить "сломанный" инстанс и заблокированный файл.
+    await dbClose();
+    throw err;
+  }
 }
 
+// ... dbGet, dbAll, dbRun, dbExec оставляем как есть ...
 export function dbGet(sql, params = []) {
   if (!db) return notInit();
   return new Promise((resolve, reject) => {
@@ -61,11 +76,17 @@ export function dbExec(sql) {
     db.exec(sql, (err) => (err ? reject(err) : resolve()));
   });
 }
+// ...
 
 export async function dbClose() {
   if (!db) return;
+
   await new Promise((resolve, reject) => {
-    db.close((err) => (err ? reject(err) : resolve()));
+    db.close((err) => {
+      if (err) reject(err);
+      else resolve();
+    });
   });
+
   db = null;
 }
