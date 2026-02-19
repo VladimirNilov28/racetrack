@@ -134,16 +134,14 @@ function render() {
     btn.classList.toggle("is-active", !!mode && !!m && String(mode).toLowerCase() === m);
   });
 
-  // UX rule: once finish, disable mode buttons
+  // UX rule: once finish, hide mode buttons and show end session
   const isFinish = String(mode).toLowerCase() === "finish";
-  modeButtons.forEach((btn) => {
-    btn.disabled = isFinish;
-    if (isFinish) {
-      btn.setAttribute("aria-disabled", "true");
-    } else {
-      btn.removeAttribute("aria-disabled");
-    }
-  });
+  const modesContainer = document.querySelector(".rc_modes");
+  if (modesContainer) modesContainer.style.display = isFinish ? "none" : "";
+
+  // Show end session card only in finish mode
+  const endSessionCard = btnEndSession?.closest(".rc_card");
+  if (endSessionCard) endSessionCard.style.display = isFinish ? "" : "none";
 }
 
 // ---------- actions -> commands ----------
