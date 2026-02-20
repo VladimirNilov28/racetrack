@@ -71,21 +71,21 @@ Once the server is running, the application is accessible at `http://localhost:8
 - **Access Key:** `RECEPTIONIST_KEY`
 - **Usage:** The receptionist uses this screen to manage upcoming race sessions. To set up a race: click "Add session" to create a new session, then add drivers to it by entering a name and optionally a car number. If no car number is entered, one will be assigned automatically. Drivers can be edited or removed after adding. Sessions can also be deleted.
 
-![Front Desk](screenshots/frontdesk.JPG)
+![Front Desk](screenshots/front-desk.JPG)
 
 #### 2. Race Control (`/race-control`)
 
 - **Access Key:** `SAFETY_KEY`
 - **Usage:** The safety official uses this screen to control the race. Start a race with the "Start race" button, then use the flag buttons to set the race mode: Safe (green), Hazard (yellow), or Danger (red). When the race is over, click "Finish race" to lock the mode to Finish — the flag buttons will disappear and "End session" button will appear. Click 'End session' to close the session and load the next one.
 
-![Race Control](screenshots/racecontrol.JPG)
+![Race Control](screenshots/race-control.JPG)
 
 #### 3. Lap-line Tracker (`/lap-line-tracker`)
 
 - **Access Key:** `OBSERVER_KEY`
 - **Usage:** Used by the observer to record laps. Press the button matching the car number (1–8) each time that car crosses the lap line. Buttons are disabled when no race is active.
 
-![Lap-line Tracker](screenshots/llt.png)
+![Lap-line Tracker](screenshots/llt.JPG)
 
 ### Public Displays (No Key Required)
 
