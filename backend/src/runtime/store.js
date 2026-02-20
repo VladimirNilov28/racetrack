@@ -1,6 +1,5 @@
 import { createInitialState } from "../service/state-init.js";
 import logger from "../logger.js";
-
 import { env } from "node:process";
 
 import { startRace } from "../service/race/start.js";
@@ -38,17 +37,14 @@ function publish(next) {
     for (const fn of listeners) fn(next);
 }
 
-/**
- * dispatch(cmd):
- * - applies domain command
- * - runs orchestration (tick + run)
- * - saves state
- * - publishes if reference changed
- */
 const DEFAULT_DURATION_SEC = env.NODE_ENV === "production" ? 600 : 60;
 const RACE_DURATION_SEC = env.RACE_DURATION_SEC
     ? Number(env.RACE_DURATION_SEC)
     : DEFAULT_DURATION_SEC;
+
+/**
+ * Main command dispatcher
+ */
 export function dispatch(cmd) {
     const prev = state;
     const { type, payload } = cmd ?? {};
@@ -56,46 +52,45 @@ export function dispatch(cmd) {
     let next = state;
 
     switch (type) {
-        // --- RACE (Safety / Race Control) ---
+        // --- RACE CONTROL ---
         case "cmd:race:start":
             next = startRace(next, payload?.durationSec ?? RACE_DURATION_SEC);
             break;
 
         case "cmd:race:set-mode":
-            next = setRaceMode(next, payload?.mode);
+            // Fix: If 'finish' mode is requested, use finishRace to stop the timer
+            if (payload?.mode === "finish") {
+                next = finishRace(next);
+            } else {
+                next = setRaceMode(next, payload?.mode);
+            }
             break;
 
         case "cmd:race:finish":
             next = finishRace(next);
             break;
 
-        // --- SESSION (Receptionist) ---
+        // --- SESSION MANAGEMENT ---
         case "cmd:session:add":
-            // expect payload: { id }
             next = addSession(next, payload?.session ?? payload);
             break;
 
         case "cmd:session:remove":
-            // payload: { id }
             next = removeSession(next, payload?.id);
             break;
 
         case "cmd:session:end":
             next = endSession(next);
-
-            // Optional auto-start after session end (not after finish)
+            // Orchestrate auto-start if applicable
             next = raceRun(next, { durationSec: RACE_DURATION_SEC });
-
             break;
 
-        // --- DRIVER (Receptionist) ---
+        // --- DRIVER MANAGEMENT ---
         case "cmd:driver:add":
-            // payload: { sessionId, driver }
             next = addDriver(next, payload?.sessionId, payload?.driver);
             break;
 
         case "cmd:driver:update":
-            // payload: { sessionId, car, patch }
             next = editDriver(
                 next,
                 payload?.sessionId,
@@ -105,11 +100,10 @@ export function dispatch(cmd) {
             break;
 
         case "cmd:driver:remove":
-            // payload: { sessionId, car }
             next = removeDriver(next, payload?.sessionId, payload?.car);
             break;
 
-        // --- LAP (Observer) ---
+        // --- LAP TRACKING ---
         case "cmd:lap:record":
             next = recordLap(next, payload?.car);
             break;
@@ -123,6 +117,7 @@ export function dispatch(cmd) {
                 },
             };
             break;
+
         default:
             throw new Error(`Unknown command: ${type}`);
     }
@@ -136,18 +131,13 @@ export function dispatch(cmd) {
 }
 
 /**
- * reduceByTime(now):
- * ONLY orchestration, without commands.
- * This will be called by ticker.
+ * Periodic orchestration (called by ticker)
  */
 export function reduceByTime(now = Date.now()) {
     const prev = state;
-
     let next = state;
 
-    // 1) Time-based transition: if timer ended -> switch race to "finish"
-    // IMPORTANT: This must NOT end the session automatically.
-    // "Finish" and "End Session" are two distinct operations in the spec.
+    // Automaticaly finish race if timer expires
     next = raceTick(next, now);
 
     state = next;
@@ -156,17 +146,10 @@ export function reduceByTime(now = Date.now()) {
     return next;
 }
 
-/**
- * __resetForTests():
- * Test-only helper to reset singleton store state between tests.
- * No commands, no orchestration — just hard reset.
- */
 export function __resetForTests(seed = null) {
     state = seed ?? createInitialState();
-    listeners.clear(); // IMPORTANT: prevents leftover subscriptions between tests
-    logger.info("state:reset", {
-        environment: process.env.NODE_ENV ?? "unknown",
-    });
+    listeners.clear();
+    logger.info("state:reset");
     return state;
 }
 

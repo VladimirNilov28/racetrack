@@ -331,14 +331,19 @@ body {
 .pub-flag-mode[data-mode="finish"] {
     background-color: white;
     background-image: conic-gradient(
-        black 90deg,
-        white 90deg 180deg,
-        black 180deg 270deg,
-        white 270deg
+        #111 90deg,
+        transparent 90deg 180deg,
+        #111 180deg 270deg,
+        transparent 270deg
     );
-    background-size: 15vw 15vw;
-    background-attachment: fixed;
-    color: black;
+    background-size: 3vw 3vw;
+    color: white;
+    text-shadow:
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000,
+        2px 2px 0 #000,
+        0px 0px 10px #000;
 }
 
 /* RACE-FLAGS SPECIFIC */
