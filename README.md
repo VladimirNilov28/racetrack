@@ -85,7 +85,7 @@ Once the server is running, the application is accessible at `http://localhost:8
 - **Access Key:** `OBSERVER_KEY`
 - **Usage:** Used by the observer to record laps. Press the button matching the car number (1–8) each time that car crosses the lap line. Buttons are disabled when no race is active.
 
-![Lap-line Tracker](screenshots/llt.JPG)
+![Lap-line Tracker](screenshots/llt.png)
 
 ### Public Displays (No Key Required)
 
@@ -95,4 +95,3 @@ _(These screens feature a button to launch in full-screen mode)_
 - **Next Race (`/next-race`):** Shows the driver lineup for the upcoming session. Displays the session ID and all registered drivers with their car numbers.
 - **Race Flags (`/race-flags`):** Full-screen display of the current race mode — green for Safe, yellow for Hazard, red for Danger, and chequered for Finish.
 - **Race Countdown (`/race-countdown`):** Countdown timer showing how much time is left in the current race.
-

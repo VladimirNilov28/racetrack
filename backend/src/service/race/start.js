@@ -1,6 +1,15 @@
 export function startRace(state, durationSec = 60) {
     const now = Date.now();
 
+    if (state.race.mode.value === "finish") {
+        throw new Error(
+            "Cannot start: current race is already finished. End the session first.",
+        );
+    }
+
+    if (state.timer.status === "running") {
+        throw new Error("Race is already running");
+    }
     // If there is no current session yet, promote the next upcoming session
     let current = state.sessions.current;
     let upcoming = state.sessions.upcoming;
