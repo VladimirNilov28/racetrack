@@ -1,0 +1,382 @@
+/* =========================================
+   Race Control - Fixed & Polished
+   ========================================= */
+
+:root {
+    /* -- Palette -- */
+    --rc-bg: #070a10;
+    --rc-panel: rgba(15, 20, 31, 0.85);
+    --rc-line: rgba(255, 255, 255, 0.12);
+
+    --rc-orange: #ff6a00;
+    --rc-orange-glow: rgba(255, 106, 0, 0.5);
+    --rc-red: #d01818;
+    --rc-red-bg: #e02222;
+    --rc-blue1: #2b7cff;
+    --rc-blue2: #1a56d9;
+    --rc-yellow1: #ffbf2f;
+    --rc-yellow2: #d79600;
+    --rc-green: #00ff8c;
+    --rc-offline: #ff3b3b;
+
+    /* -- Text -- */
+    --rc-text: #e9eef7;
+    --rc-muted: rgba(233, 238, 247, 0.7);
+
+    /* -- Radius -- */
+    --rc-r-header: 6px;
+    --rc-r-card: 4px;
+    --rc-r-row: 3px;
+    --rc-r-btn: 3px;
+    --rc-r-in: 3px;
+
+    /* -- Transitions -- */
+    --rc-ease: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   Global Reset & Fonts
+   ========================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--rc-text);
+    -webkit-font-smoothing: antialiased;
+
+    /* Complex Dark Background */
+    background:
+        radial-gradient(
+            1200px 700px at 50% 0%,
+            rgba(255, 106, 0, 0.1),
+            transparent 55%
+        ),
+        radial-gradient(
+            1000px 700px at 20% 10%,
+            rgba(255, 255, 255, 0.04),
+            transparent 60%
+        ),
+        radial-gradient(
+            1000px 700px at 80% 20%,
+            rgba(255, 255, 255, 0.03),
+            transparent 60%
+        ),
+        radial-gradient(
+            1200px 900px at 50% 88%,
+            rgba(0, 0, 0, 0.7),
+            transparent 60%
+        ),
+        var(--rc-bg);
+    background-attachment: fixed;
+    background-color: var(--rc-bg);
+}
+
+.rc_theme .muted {
+    opacity: 1;
+    color: var(--rc-muted);
+}
+
+/* =========================================
+   Header
+   ========================================= */
+
+.rc_header {
+    position: relative;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    border-radius: var(--rc-r-header);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 55%),
+        rgba(10, 14, 22, 0.85);
+    border: 1px solid var(--rc-line);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rc_header::before {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    top: 0.65rem;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--rc-orange) 18%,
+        var(--rc-orange) 82%,
+        transparent 100%
+    );
+    opacity: 0.9;
+}
+
+.rc_title {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Status Badge */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.1);
+    font-weight: 900;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.badge_offline {
+    color: var(--rc-offline);
+    border-color: rgba(255, 59, 59, 0.4);
+    box-shadow: inset 0 0 0 1px rgba(255, 59, 59, 0.1);
+}
+
+/* =========================================
+   Grid Layout
+   ========================================= */
+
+.rc_stage {
+    padding: 1rem;
+}
+
+.rc_grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 1100px) {
+    .rc_grid {
+        /* Columns: Left(Session) | Middle(Timer+End) | Right(Mode) */
+        grid-template-columns: 1.35fr 1.05fr 1.25fr;
+        grid-template-areas:
+            "session timer mode"
+            "session end   mode";
+        /* This ensures the middle cards stack nicely */
+        grid-template-rows: auto auto;
+        align-items: start;
+    }
+
+    .rc_grid > article:nth-child(1) {
+        grid-area: session;
+        height: 100%;
+    }
+    .rc_grid > article:nth-child(2) {
+        grid-area: timer;
+    }
+    .rc_grid > article:nth-child(3) {
+        grid-area: mode;
+        height: 100%;
+    }
+    .rc_grid > article:nth-child(4) {
+        grid-area: end;
+    }
+}
+
+/* =========================================
+   Cards
+   ========================================= */
+
+.rc_card {
+    position: relative;
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--rc-r-card);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 35%),
+        var(--rc-panel);
+    border: 1px solid var(--rc-line);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Orange Bar */
+.card_bar {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    height: 3px;
+    background: var(--rc-orange);
+    box-shadow: 0 0 10px var(--rc-orange-glow);
+    border-radius: 2px;
+}
+
+.card_title {
+    margin: 0.5rem 0 1rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 1rem 0;
+}
+
+/* Row helper for buttons */
+.row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+/* Key-Value Pairs */
+.kv {
+    margin-bottom: 0.75rem;
+}
+.kv .muted {
+    font-size: 0.85rem;
+    margin-bottom: 0.2rem;
+}
+.kv div:not(.muted) {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* =========================================
+   Buttons
+   ========================================= */
+
+.rc_theme .btn {
+    border-radius: var(--rc-r-btn);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.02)
+    );
+    color: var(--rc-text);
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: var(--rc-ease);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1; /* Makes buttons in .row share width */
+}
+
+.rc_theme .btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+}
+
+.rc_theme .btn:active {
+    transform: translateY(1px);
+}
+
+/* Primary (Blue) */
+.rc_theme .btn_primary {
+    background: linear-gradient(180deg, var(--rc-blue1), var(--rc-blue2));
+    border-color: var(--rc-blue2);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(26, 86, 217, 0.4);
+}
+
+/* Warn (Yellow) */
+.rc_theme .btn_warn {
+    background: linear-gradient(180deg, var(--rc-yellow1), var(--rc-yellow2));
+    border-color: rgba(255, 191, 47, 0.85);
+    color: #1a1200;
+    box-shadow: 0 4px 12px rgba(255, 191, 47, 0.2);
+}
+
+/* Danger (Red) */
+.rc_theme .btn_danger {
+    background: linear-gradient(180deg, #e02222, #a60f0f);
+    border-color: rgba(208, 24, 24, 0.8);
+    color: #ffecec;
+    box-shadow: 0 4px 12px rgba(208, 24, 24, 0.4);
+}
+
+/* =========================================
+   Timer Block
+   ========================================= */
+
+.rc_timer {
+    padding: 1rem;
+    border-radius: var(--rc-r-row);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.rc_timecode {
+    font-family: "Consolas", "Monaco", monospace;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: var(--rc-yellow1);
+    text-shadow: 0 0 10px rgba(255, 179, 0, 0.5);
+    line-height: 1;
+    margin-top: 0.5rem;
+}
+
+/* =========================================
+   Mode Controls
+   ========================================= */
+
+.rc_modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.rc_mode {
+    padding: 1.25rem 0.5rem;
+    text-align: center;
+    border-width: 1px;
+    font-size: 0.9rem;
+}
+
+/* Mode Colors */
+.rc_mode_safe {
+    border-color: rgba(0, 255, 140, 0.4);
+    color: #00ff8c;
+}
+.rc_mode_hazard {
+    border-color: rgba(255, 191, 47, 0.5);
+    color: #ffbf2f;
+}
+.rc_mode_danger {
+    border-color: rgba(255, 60, 60, 0.5);
+    color: #ff3c3c;
+}
+.rc_mode_finish {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
+
+/* Active Mode Badge */
+.rc_mode_badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

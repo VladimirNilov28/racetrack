@@ -1,0 +1,39 @@
+{
+    "name": "app",
+    "version": "1.0.0",
+    "description": "racetrack info-screens backend",
+    "keywords": [],
+    "repository": {
+        "type": "git",
+        "url": "https://gitea.kood.tech/vladimirnilov/info-screens"
+    },
+    "license": "ISC",
+    "author": "vladimirnilov",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "start": "cross-env NODE_ENV=production node backend/src/server.js",
+        "dev": "nodemon backend/src/server.js",
+        "test": "vitest"
+    },
+    "overrides": {
+        "tar": "^6.2.1",
+        "glob": "^10.3.10",
+        "rimraf": "^5.0.5"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^5.2.1",
+        "socket.io": "^4.8.3",
+        "socket.io-client": "^4.8.3",
+        "socketio-wildcard": "^2.0.0",
+        "sqlite3": "^5.1.7",
+        "vitest": "^4.0.16",
+        "winston": "^3.19.0"
+    },
+    "devDependencies": {
+        "cross-env": "^10.1.0",
+        "eslint-config-google": "^0.14.0",
+        "nodemon": "^3.1.11"
+    }
+}

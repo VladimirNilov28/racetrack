@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/lap-line-tracker.css" />
+  <title>Lap-line Tracker</title>
+</head>
+<body>
+  <main class="page llt_theme">
+    <header class="page_header llt_header">
+      <div class="llt_header_left">
+        <h1 class="page_title llt_title">Lap-line Tracker</h1>
+        <p class="muted llt_subtitle">Observer • Record lap times with car buttons</p>
+      </div>
+
+      <div class="status llt_status">
+        <span class="muted">Connection:</span>
+        <strong data-llt="conn-status" class="badge badge_offline">Offline</strong>
+        <span class="llt_status_ticks" aria-hidden="true"></span>
+      </div>
+    </header>
+
+    <section class="llt_stage" aria-label="Lap-line tracker panels">
+      <div class="llt_rails" aria-hidden="true"></div>
+
+      <div class="llt_grid">
+        <!-- Card 1: Session Info -->
+        <article class="card llt_card">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Current Session</h2>
+
+          <div class="kv">
+            <div class="muted">Session ID</div>
+            <div data-llt="session-id">—</div>
+          </div>
+
+          <div class="kv">
+            <div class="muted">Timer</div>
+            <div data-llt="timer" class="llt_timecode">—:—</div>
+          </div>
+
+          <div class="kv">
+            <div class="muted">Race Mode</div>
+            <div data-llt="race-mode" class="llt_mode_badge">—</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="kv">
+            <div class="muted">Last update</div>
+            <div data-llt="last-update" class="timecode">—</div>
+          </div>
+        </article>
+
+        <!-- Card 2: Car Buttons -->
+        <article class="card llt_card llt_card_main">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Record Lap</h2>
+          <p class="muted">Tap car button when driver crosses finish line</p>
+
+          <div class="llt_car_grid" role="group" aria-label="Car lap buttons">
+            <button type="button" class="btn llt_car_btn" data-car="1" data-action="llt-record-lap">
+              <div class="llt_car_num">1</div>
+              <div class="llt_car_driver" data-llt="car-1-driver">—</div>
+              <div class="llt_car_laps" data-llt="car-1-laps">0 laps</div>
+            </button>
+
+            <button type="button" class="btn llt_car_btn" data-car="2" data-action="llt-record-lap">
+              <div class="llt_car_num">2</div>
+              <div class="llt_car_driver" data-llt="car-2-driver">—</div>
+              <div class="llt_car_laps" data-llt="car-2-laps">0 laps</div>
+            </button>
+
+            <button type="button" class="btn llt_car_btn" data-car="3" data-action="llt-record-lap">
+              <div class="llt_car_num">3</div>
+              <div class="llt_car_driver" data-llt="car-3-driver">—</div>
+              <div class="llt_car_laps" data-llt="car-3-laps">0 laps</div>
+            </button>
+
+            <button type="button" class="btn llt_car_btn" data-car="4" data-action="llt-record-lap">
+              <div class="llt_car_num">4</div>
+              <div class="llt_car_driver" data-llt="car-4-driver">—</div>
+              <div class="llt_car_laps" data-llt="car-4-laps">0 laps</div>
+            </button>
+
+            <button type="button" class="btn llt_car_btn" data-car="5" data-action="llt-record-lap">
+              <div class="llt_car_num">5</div>
+              <div class="llt_car_driver" data-llt="car-5-driver">—</div>
+              <div class="llt_car_laps" data-llt="car-5-laps">0 laps</div>
+            </button>
+
+            <button type="button" class="btn llt_car_btn" data-car="6" data-action="llt-record-lap">
+              <div class="llt_car_num">6</div>
+              <div class="llt_car_driver" data-llt="car-6-driver">—</div>
+              <div class="llt_car_laps" data-llt="car-6-laps">0 laps</div>
+            </button>
+
+            <button type="button" class="btn llt_car_btn" data-car="7" data-action="llt-record-lap">
+              <div class="llt_car_num">7</div>
+              <div class="llt_car_driver" data-llt="car-7-driver">—</div>
+              <div class="llt_car_laps" data-llt="car-7-laps">0 laps</div>
+            </button>
+
+            <button type="button" class="btn llt_car_btn" data-car="8" data-action="llt-record-lap">
+              <div class="llt_car_num">8</div>
+              <div class="llt_car_driver" data-llt="car-8-driver">—</div>
+              <div class="llt_car_laps" data-llt="car-8-laps">0 laps</div>
+            </button>
+          </div>
+        </article>
+
+        <!-- Card 3: Recent Laps -->
+        <article class="card llt_card">
+          <div class="card_bar" aria-hidden="true"></div>
+          <h2 class="card_title">Recent Laps</h2>
+
+          <ul class="list list_slots" data-llt="recent-laps" aria-label="Recent lap recordings">
+            <li class="muted">No laps recorded yet</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/lap-line-tracker.js"></script>
+</body>
+</html>

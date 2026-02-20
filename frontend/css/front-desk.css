@@ -1,0 +1,277 @@
+/* =========================================
+   Front Desk Theme - Fixed
+   ========================================= */
+
+:root {
+    --fd-bg: #070a10;
+    --fd-panel: rgba(15, 20, 31, 0.85);
+    --fd-line: rgba(255, 255, 255, 0.12);
+
+    --fd-orange: #ff6a00;
+    --fd-orange-glow: rgba(255, 106, 0, 0.5);
+    --fd-red: #d01818;
+    --fd-blue1: #2b7cff;
+    --fd-blue2: #1a56d9;
+    --fd-yellow1: #ffbf2f;
+    --fd-green: #00ff8c;
+    --fd-offline: #ff3b3b;
+
+    --fd-text: #e9eef7;
+    --fd-muted: rgba(233, 238, 247, 0.7);
+
+    --fd-r-card: 4px;
+    --fd-r-in: 3px;
+    --fd-ease: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global Reset & Font Fix */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--fd-text);
+    background: linear-gradient(180deg, #0a0f17 0%, #070a10 45%, #04070c 100%);
+    background-color: var(--fd-bg);
+}
+
+/* Header */
+.fd_header {
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    background: rgba(10, 14, 22, 0.85);
+    border-bottom: 1px solid var(--fd-line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fd_title {
+    margin: 0;
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+/* Status Badge */
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 900;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.badge.badge_offline {
+    color: var(--fd-offline);
+    border-color: rgba(255, 59, 59, 0.4);
+}
+
+/* =========================================
+   GRID LAYOUT FIX (Closes the Left Gap)
+   ========================================= */
+
+.fd_stage {
+    padding: 1rem;
+}
+
+.fd_grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 1100px) {
+    .fd_grid {
+        display: grid;
+        /* Columns: 1, 2, 3 */
+        grid-template-columns: 1fr 1.6fr 1.1fr;
+        /* Define visual areas to stack items correctly */
+        grid-template-areas:
+            "sessions details preview"
+            "status   details preview";
+        align-items: start;
+    }
+
+    /* Assign HTML elements to Grid Areas */
+    /* 1. Upcoming Sessions */
+    .fd_grid > article:nth-child(1) {
+        grid-area: sessions;
+    }
+    /* 2. Session Details */
+    .fd_grid > article:nth-child(2) {
+        grid-area: details;
+    }
+    /* 3. Next Race Preview */
+    .fd_grid > article:nth-child(3) {
+        grid-area: preview;
+    }
+    /* 4. System Status -> MOVES TO BOTTOM LEFT */
+    .fd_grid > article:nth-child(4) {
+        grid-area: status;
+    }
+}
+
+/* =========================================
+   CARDS & INPUT ALIGNMENT
+   ========================================= */
+
+.card_race {
+    position: relative;
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--fd-r-card);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 35%),
+        var(--fd-panel);
+    border: 1px solid var(--fd-line);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Orange Top Bar */
+.card_bar {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    height: 3px;
+    background: var(--fd-orange);
+    box-shadow: 0 0 10px var(--fd-orange-glow);
+    border-radius: 2px;
+}
+
+.card_title {
+    margin: 0.5rem 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ---- FIX: INPUT ROW ALIGNMENT ---- */
+/* Targeting your <form class="row"> specifically */
+.card_race form.row {
+    display: flex;
+    align-items: center; /* Centers items vertically */
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0;
+    border: none; /* Removes any dashed borders */
+}
+
+/* Force Input/Select/Button to same height */
+.card_race form.row input,
+.card_race form.row select,
+.card_race form.row button {
+    height: 38px !important;
+    margin: 0;
+    font-family: inherit;
+    font-size: 0.9rem;
+    border-radius: var(--fd-r-in);
+}
+
+/* Input Styling */
+.card_race input[type="text"],
+.card_race select {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--fd-text);
+    padding: 0 10px;
+    outline: none;
+}
+
+/* Flex grow for the name input */
+.card_race input[name="driverName"] {
+    flex: 1; /* Fills remaining space */
+}
+
+.card_race input:focus,
+.card_race select:focus {
+    border-color: var(--fd-orange);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Button Styling */
+.btn {
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--fd-text);
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--fd-ease);
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Primary Button (Blue) */
+.btn_primary {
+    background: linear-gradient(180deg, var(--fd-blue1), var(--fd-blue2));
+    border: none;
+    height: 38px; /* Matches form inputs */
+}
+
+/* Add Button */
+.btn_add {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.02)
+    );
+}
+
+/* List Styling */
+.list_slots {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+}
+.list_slots li {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 1rem 0;
+}
+
+/* Timecode */
+.timecode {
+    font-family: monospace;
+    font-weight: 700;
+    color: var(--fd-yellow1);
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px rgba(255, 191, 47, 0.5);
+    margin-top: 0.5rem;
+}
+
+
+.slot {
+  
+  border: 2px solid transparent; 
+  transition: all 0.2s ease-in-out;
+}
+
+
+.slot.is-active {
+  border: 2px solid #ff6a00;
+  border-radius: 8px; 
+  box-shadow: 0 0 10px rgba(255, 106, 0, 0.3); 
+  background-color: rgba(255, 106, 0, 0.05); 
+}
