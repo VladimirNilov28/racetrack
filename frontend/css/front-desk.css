@@ -260,3 +260,18 @@ body {
     text-shadow: 0 0 5px rgba(255, 191, 47, 0.5);
     margin-top: 0.5rem;
 }
+
+
+.slot {
+  
+  border: 2px solid transparent; 
+  transition: all 0.2s ease-in-out;
+}
+
+
+.slot.is-active {
+  border: 2px solid #ff6a00;
+  border-radius: 8px; 
+  box-shadow: 0 0 10px rgba(255, 106, 0, 0.3); 
+  background-color: rgba(255, 106, 0, 0.05); 
+}
