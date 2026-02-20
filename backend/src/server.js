@@ -11,7 +11,6 @@ import wildcard from "socketio-wildcard";
 
 import logger from "./logger.js";
 import { keyCheck } from "./security/global-key-control.js";
-import { registerPages } from "./routes/pages.js";
 import { keyAuthentication } from "./sockets/auth.js";
 import { socketConnect } from "./sockets/handlers.js";
 import { parseCli, printHelp } from "./config/cli.js";
@@ -21,17 +20,17 @@ import { dbInit, dbClose } from "./config/database.js";
 import { loadState, saveState } from "./config/state-snapshot.js";
 
 import {
-  __unsafeReplaceStateForBoot,
-  reduceByTime,
-  subscribe,
-  getState,
+    __unsafeReplaceStateForBoot,
+    reduceByTime,
+    subscribe,
+    getState,
 } from "./runtime/store.js";
 
 // CLI
 const cli = parseCli(process.argv);
 if (cli.help) {
-  printHelp();
-  process.exit(0);
+    printHelp();
+    process.exit(0);
 }
 
 // env / security
@@ -44,9 +43,9 @@ await dbInit({ filename: env.SQLITE_FILE ?? "db.sqlite" });
 
 const restored = await loadState();
 if (restored) {
-  __unsafeReplaceStateForBoot(restored);
-  // Catch up timers/orchestration after downtime
-  reduceByTime(Date.now());
+    __unsafeReplaceStateForBoot(restored);
+    // Catch up timers/orchestration after downtime
+    reduceByTime(Date.now());
 }
 
 // Server
@@ -54,26 +53,29 @@ const PORT = env.PORT || 8080;
 const HOST = env.HOST || "0.0.0.0";
 
 const app = express();
-const server = createServer(app);
-const io = new Server(server, { connectionStateRecovery: {} });
 
 // Statics
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PUBLIC = path.join(__dirname, "../../frontend/public");
-const JS = path.join(__dirname, "../../frontend/js");
-const CSS = path.join(__dirname, "../../frontend/css");
+const PUBLIC = path.join(__dirname, "../../frontend");
 
-app.use(express.static(PUBLIC));
-app.use("/js", express.static(JS));
-app.use("/css", express.static(CSS));
+app.use(express.static(PUBLIC, { extensions: ["html"] }));
+
+const server = createServer(app);
+const io = new Server(server, { connectionStateRecovery: {} });
+// const JS = path.join(__dirname, "../../frontend/js");
+// const CSS = path.join(__dirname, "../../frontend/css");
+
+// app.use(express.static(PUBLIC));
+// app.use("/js", express.static(JS));
+// app.use("/css", express.static(CSS));
 
 // Socket.io patch via socketio-wildcard
 io.use(wildcard());
 
 // UI
-registerPages(app);
+// registerPages(app);
 
 // Sockets
 keyAuthentication(io);
@@ -81,10 +83,10 @@ socketConnect(io);
 
 // ---- DB: persist snapshots on every state change ----
 const unsubscribePersist = subscribe((next) => {
-  // IMPORTANT: do not await here (real-time)
-  saveState(next).catch((e) => {
-    logger.error("db:save:fail", { msg: e?.message });
-  });
+    // IMPORTANT: do not await here (real-time)
+    saveState(next).catch((e) => {
+        logger.error("db:save:fail", { msg: e?.message });
+    });
 });
 
 // Ticker
@@ -92,20 +94,20 @@ startTicker({ intervalMs: 250 });
 
 // Graceful shutdown
 process.on("SIGINT", async () => {
-  logger.info("server:shutdown");
-  try {
-    unsubscribePersist?.();
-    // Final best-effort save
-    await saveState(getState()).catch(() => {});
-    await dbClose().catch(() => {});
-  } finally {
-    process.exit(0);
-  }
+    logger.info("server:shutdown");
+    try {
+        unsubscribePersist?.();
+        // Final best-effort save
+        await saveState(getState()).catch(() => {});
+        await dbClose().catch(() => {});
+    } finally {
+        process.exit(0);
+    }
 });
 
 server.listen(PORT, HOST);
 logger.info("server:start", {
-  host: HOST,
-  port: PORT,
-  nodeEnv: process.env.NODE_ENV,
+    host: HOST,
+    port: PORT,
+    nodeEnv: process.env.NODE_ENV,
 });

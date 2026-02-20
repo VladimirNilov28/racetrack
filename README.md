@@ -1,98 +1,94 @@
-# FRONTEND_SETUP
+# Racetrack Info-Screens
 
-This guide explains how to set up and run the frontend projects before starting development.
-
----
+This is a full-stack application for managing and displaying real-time racetrack information at Beachside Racetrack. The project features a Node.js/Express backend with Socket.io for real-time orchestration and a Vanilla JS frontend.
 
 ## Prerequisites
 
-Make sure you have the following installed:
+- **Node.js**: Version 18.x or higher is recommended.
+- **npm**: Node Package Manager.
 
-- Node.js 18 or newer
-- npm
+## Configuration & Security
 
-Check versions:
+To protect employee interfaces, the server requires access keys to be set as environment variables before starting. If these keys are not provided, the server will intentionally fail to start and display a usage error.
+
+Create a `.env` file in the root directory or export the following variables in your terminal:
 
 ```bash
-node -v
-npm -v
+export RECEPTIONIST_KEY=<your key>
+export SAFETY_KEY=<your key>
+export OBSERVER_KEY=<your key>
+
+# Optional overrides:
+export PORT=8080
+export SQLITE_FILE=db.sqlite
 ```
 
----
+_(Note: If an incorrect key is provided by the client, the server enforces a 500ms delay before responding to prevent brute-force attacks)._
 
-## 1. Clone the repository
+## Installation & Launch
 
-```bash
-git clone <repo-url>
-cd racetrack
-```
-
----
-
-## 2. Switch to your branch
-
-Choose your personal frontend branch:
+1. Clone the repository and navigate to the root directory.
+2. Install the required dependencies:
 
 ```bash
-git checkout front/<your-nickname>
-git pull
-```
-
----
-
-## 3. Install dependencies
-
-Go to your frontend project directory.
-
-For Admin Control:
-
-```bash
-cd admin-control
 npm install
 ```
 
-For User Display:
+### Development Mode (1-minute races)
 
-```bash
-cd user-display
-npm install
-```
-
----
-
-## 4. Environment configuration
-
-Create a `.env` file inside your frontend directory:
-
-```env
-VITE_SOCKET_URL=http://localhost:3000
-```
-
-Do not commit this file.
-
----
-
-## 5. Start development server
+Starts the server with hot-reloading (using `nodemon`). In this mode, race timers are shortened to **1 minute** for testing purposes.
 
 ```bash
 npm run dev
 ```
 
-The frontend will be available at:
+### Production Mode (10-minute races)
 
-- http://localhost:5173
-- http://localhost:5174
+Launches the project in a production environment. Race timers are set to the standard **10 minutes**.
 
-(depending on the project)
+```bash
+npm start
+```
+
+## Running Tests
+
+This project uses `vitest` for testing. To execute the test suite, run:
+
+```bash
+npm test
+```
 
 ---
 
-## Notes
+## User Guide
 
-- Backend must be running to receive realtime data
-- Do not commit `node_modules`
-- Do not commit `.env`
+Once the server is running, the application is accessible at `http://localhost:8080/` (or your configured port).
 
----
+### Employee Interfaces (Require Access Keys)
 
-You are now ready to work on the frontend.
+#### 1. Front Desk (`/front-desk`)
+
+- **Access Key:** `RECEPTIONIST_KEY`
+- **Usage:** [TODO: Frontend dev - describe how the Receptionist configures races, adds drivers, etc.]
+- **Screenshot:** > `[TODO: Frontend dev - Insert screenshot of Front Desk here]`
+
+#### 2. Race Control (`/race-control`)
+
+- **Access Key:** `SAFETY_KEY`
+- **Usage:** [TODO: Frontend dev - describe how the Safety Official starts/finishes races and controls flags]
+- **Screenshot:** > `[TODO: Frontend dev - Insert screenshot of Race Control here]`
+
+#### 3. Lap-line Tracker (`/lap-line-tracker`)
+
+- **Access Key:** `OBSERVER_KEY`
+- **Usage:** [TODO: Frontend dev - describe how the Observer records lap times]
+- **Screenshot:** > `[TODO: Frontend dev - Insert screenshot of Lap-line Tracker here]`
+
+### Public Displays (No Key Required)
+
+_(These screens feature a button to launch in full-screen mode)_
+
+- **Leader Board (`/leader-board`):** [TODO: Frontend dev - add brief description of the real-time ranking view]
+- **Next Race (`/next-race`):** [TODO: Frontend dev - add brief description of the upcoming roster view]
+- **Race Flags (`/race-flags`):** [TODO: Frontend dev - add brief description of the full-screen flag indicators]
+- **Race Countdown (`/race-countdown`):** [TODO: Frontend dev - add brief description of the timer screen]
