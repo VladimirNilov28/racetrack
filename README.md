@@ -69,26 +69,30 @@ Once the server is running, the application is accessible at `http://localhost:8
 #### 1. Front Desk (`/front-desk`)
 
 - **Access Key:** `RECEPTIONIST_KEY`
-- **Usage:** [TODO: Frontend dev - describe how the Receptionist configures races, adds drivers, etc.]
-- **Screenshot:** > `[TODO: Frontend dev - Insert screenshot of Front Desk here]`
+- **Usage:** The receptionist uses this screen to manage upcoming race sessions. To set up a race: click "Add session" to create a new session, then add drivers to it by entering a name and optionally a car number. If no car number is entered, one will be assigned automatically. Drivers can be edited or removed after adding. Sessions can also be deleted.
+
+![Front Desk](screenshots/frontdesk.JPG)
 
 #### 2. Race Control (`/race-control`)
 
 - **Access Key:** `SAFETY_KEY`
-- **Usage:** [TODO: Frontend dev - describe how the Safety Official starts/finishes races and controls flags]
-- **Screenshot:** > `[TODO: Frontend dev - Insert screenshot of Race Control here]`
+- **Usage:** The safety official uses this screen to control the race. Start a race with the "Start race" button, then use the flag buttons to set the race mode: Safe (green), Hazard (yellow), or Danger (red). When the race is over, click "Finish race" to lock the mode to Finish — the flag buttons will disappear and "End session" button will appear. Click 'End session' to close the session and load the next one.
+
+![Race Control](screenshots/racecontrol.JPG)
 
 #### 3. Lap-line Tracker (`/lap-line-tracker`)
 
 - **Access Key:** `OBSERVER_KEY`
-- **Usage:** [TODO: Frontend dev - describe how the Observer records lap times]
-- **Screenshot:** > `[TODO: Frontend dev - Insert screenshot of Lap-line Tracker here]`
+- **Usage:** Used by the observer to record laps. Press the button matching the car number (1–8) each time that car crosses the lap line. Buttons are disabled when no race is active.
+
+![Lap-line Tracker](screenshots/llt.JPG)
 
 ### Public Displays (No Key Required)
 
 _(These screens feature a button to launch in full-screen mode)_
 
-- **Leader Board (`/leader-board`):** [TODO: Frontend dev - add brief description of the real-time ranking view]
-- **Next Race (`/next-race`):** [TODO: Frontend dev - add brief description of the upcoming roster view]
-- **Race Flags (`/race-flags`):** [TODO: Frontend dev - add brief description of the full-screen flag indicators]
-- **Race Countdown (`/race-countdown`):** [TODO: Frontend dev - add brief description of the timer screen]
+- **Leader Board (`/leader-board`):** Shows live race standings sorted by fastest lap. Shows driver name, car number, total laps, and best lap time.
+- **Next Race (`/next-race`):** Shows the driver lineup for the upcoming session. Displays the session ID and all registered drivers with their car numbers.
+- **Race Flags (`/race-flags`):** Full-screen display of the current race mode — green for Safe, yellow for Hazard, red for Danger, and chequered for Finish.
+- **Race Countdown (`/race-countdown`):** Countdown timer showing how much time is left in the current race.
+
