@@ -81,8 +81,6 @@ export function dispatch(cmd) {
 
         case "cmd:session:end":
             next = endSession(next);
-            // Orchestrate auto-start if applicable
-            next = raceRun(next, { durationSec: RACE_DURATION_SEC });
             break;
 
         // --- DRIVER MANAGEMENT ---
