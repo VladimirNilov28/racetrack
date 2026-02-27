@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { env } from "node:process";
 import logger from "../logger.js";
 
