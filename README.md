@@ -14,13 +14,9 @@ To protect employee interfaces, the server requires access keys to be set as env
 Create a `.env` file in the root directory or export the following variables in your terminal:
 
 ```bash
-export RECEPTIONIST_KEY=<your key>
-export SAFETY_KEY=<your key>
-export OBSERVER_KEY=<your key>
-
-# Optional overrides:
-export PORT=8080
-export SQLITE_FILE=db.sqlite
+RECEPTIONIST_KEY=<your key>
+SAFETY_KEY=<your key>
+OBSERVER_KEY=<your key>
 ```
 
 _(Note: If an incorrect key is provided by the client, the server enforces a 500ms delay before responding to prevent brute-force attacks)._
